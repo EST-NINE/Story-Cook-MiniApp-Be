@@ -33,6 +33,15 @@ func (s *StorySrv) CreateStory(ctx *gin.Context, req *dto.CreateStoryDto) (resp 
 	return vo.Success(), nil
 }
 
+func (s *StorySrv) FindStoryById(ctx *gin.Context, id uint) (resp *vo.Response, err error) {
+	story, err := dao.NewStoryDao(ctx).FindStoryById(id)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorNotExistStory), err
+	}
+
+	return vo.SuccessWithData(vo.BuildStoryResp(story)), nil
+}
+
 // ListStory 得到对应用户的故事
 func (s *StorySrv) ListStory(ctx *gin.Context, req *dto.ListStoryDto) (resp *vo.Response, err error) {
 	claims, _ := ctx.Get("claims")

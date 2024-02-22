@@ -24,6 +24,15 @@ func (s *TaskSrv) CreateTask(ctx *gin.Context, req *dto.TaskDto) (resp *vo.Respo
 	return vo.Success(), nil
 }
 
+func (s *TaskSrv) FindTaskById(ctx *gin.Context, id uint) (resp *vo.Response, err error) {
+	task, err := dao.NewTaskDao(ctx).FindTaskById(id)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorNotExistTask), err
+	}
+
+	return vo.SuccessWithData(vo.BuildTaskResp(task)), nil
+}
+
 func (s *TaskSrv) ListTask(ctx *gin.Context, req *dto.ListTaskDto) (resp *vo.Response, err error) {
 	tasks, total, err := dao.NewTaskDao(ctx).ListTask(req.Page, req.Limit)
 	if err != nil {

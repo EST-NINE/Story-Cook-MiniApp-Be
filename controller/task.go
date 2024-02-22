@@ -30,6 +30,25 @@ func CreateTaskHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
+func GetTaskHandler(ctx *gin.Context) {
+	idStr := ctx.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
+		return
+	}
+
+	taskSrv := service.TaskSrv{}
+	resp, err := taskSrv.FindTaskById(ctx, uint(id))
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+}
+
 func ListTaskHandler(ctx *gin.Context) {
 	var req dto.ListTaskDto
 	if err := ctx.ShouldBind(&req); err != nil {

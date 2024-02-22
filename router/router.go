@@ -30,12 +30,14 @@ func NewRouter() *gin.Engine {
 			authed.GET("user/info", controller.GetUserInfoHandler)
 
 			// 故事操作
+			authed.GET("story/:id", controller.GetStoryHandler)
 			authed.POST("story/save", controller.CreateStoryHandler)
 			authed.POST("story/list", controller.ListStoryHandler)
 			authed.DELETE("story/:id", controller.DeleteStoryHandler)
 			authed.PUT("story", controller.UpdateStoryHandler)
 
 			// 故事操作
+			authed.GET("task/:id", controller.GetTaskHandler)
 			authed.POST("task/save", controller.CreateTaskHandler)
 			authed.POST("task/list", controller.ListTaskHandler)
 			authed.DELETE("task/:id", controller.DeleteTaskHandler)
