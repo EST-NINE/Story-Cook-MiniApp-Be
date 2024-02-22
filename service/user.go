@@ -45,7 +45,7 @@ func (s *UserSrv) Login(ctx *gin.Context, req *dto.UserDto) (resp *vo.Response, 
 		}
 	}
 
-	token, err := util.GenerateToken(user.ID, user.UserName)
+	token, err := util.GenerateToken(user.ID, 0)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorAuthToken), err
 	}

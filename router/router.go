@@ -16,33 +16,35 @@ func NewRouter() *gin.Engine {
 
 	r.Use(middleware.CORS())
 	public := r.Group("api/v1")
+	public.GET("ping", func(ctx *gin.Context) { ctx.JSON(http.StatusOK, "pong!") })
+
+	// 用户端操作
+	public.POST("user/login", controller.UserLoginHandler)
+	authed := public.Group("/", middleware.JWTUserAuth()) // 登录保护
 	{
-		public.GET("ping", func(ctx *gin.Context) { ctx.JSON(http.StatusOK, "pong!") })
+		authed.PUT("user/info", controller.UpdateUserInfoHandler)
+		authed.GET("user/info", controller.GetUserInfoHandler)
 
-		// 用户操作
-		public.POST("user/login", controller.UserLoginHandler)
+		authed.GET("story/:id", controller.GetStoryHandler)
+		authed.POST("story/save", controller.CreateStoryHandler)
+		authed.POST("story/list", controller.ListStoryHandler)
+		authed.DELETE("story/:id", controller.DeleteStoryHandler)
+		authed.PUT("story", controller.UpdateStoryHandler)
+	}
 
-		authed := public.Group("/") // 登录保护
-		authed.Use(middleware.JWT())
-		{
-			// 用户操作
-			authed.PUT("user/info", controller.UpdateUserInfoHandler)
-			authed.GET("user/info", controller.GetUserInfoHandler)
+	// 管理端操作
+	public.POST("admin/login", controller.AdminLoginHandler)
+	admin := public.Group("/admin", middleware.JWTAdminAuth()) // 登录保护
+	{
+		admin.POST("register", controller.AdminRegisterHandler)
+		admin.PUT("info", controller.UpdateAdminInfoHandler)
+		admin.GET("info", controller.GetAdminInfoHandler)
 
-			// 故事操作
-			authed.GET("story/:id", controller.GetStoryHandler)
-			authed.POST("story/save", controller.CreateStoryHandler)
-			authed.POST("story/list", controller.ListStoryHandler)
-			authed.DELETE("story/:id", controller.DeleteStoryHandler)
-			authed.PUT("story", controller.UpdateStoryHandler)
-
-			// 故事操作
-			authed.GET("task/:id", controller.GetTaskHandler)
-			authed.POST("task/save", controller.CreateTaskHandler)
-			authed.POST("task/list", controller.ListTaskHandler)
-			authed.DELETE("task/:id", controller.DeleteTaskHandler)
-			authed.PUT("task", controller.UpdateTaskHandler)
-		}
+		admin.GET("task/:id", controller.GetTaskHandler)
+		admin.POST("task/save", controller.CreateTaskHandler)
+		admin.POST("task/list", controller.ListTaskHandler)
+		admin.DELETE("task/:id", controller.DeleteTaskHandler)
+		admin.PUT("task", controller.UpdateTaskHandler)
 	}
 
 	return r

@@ -14,6 +14,6 @@ const (
 	ErrorNotExistUser
 
 	ErrorNotExistStory
-
 	ErrorNotExistTask
+	ErrorNotExistAdmin
 )
