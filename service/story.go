@@ -1,15 +1,12 @@
 package service
 
 import (
-	"errors"
-
 	"github.com/gin-gonic/gin"
 	"github.com/ncuhome/story-cook/model/dao"
 	"github.com/ncuhome/story-cook/model/dto"
 	"github.com/ncuhome/story-cook/model/vo"
 	"github.com/ncuhome/story-cook/pkg/myErrors"
 	"github.com/ncuhome/story-cook/pkg/util"
-	"gorm.io/gorm"
 )
 
 type StorySrv struct {
@@ -57,9 +54,8 @@ func (s *StorySrv) ListStory(ctx *gin.Context, req *dto.ListStoryDto) (resp *vo.
 // DeleteStory 删除故事
 func (s *StorySrv) DeleteStory(ctx *gin.Context, id uint) (resp *vo.Response, err error) {
 	err = dao.NewStoryDao(ctx).DeleteStory(id)
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		err = errors.New("没有这个故事")
-		return vo.Error(err, myErrors.ErrorNotExistStory), err
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
 	return vo.Success(), nil

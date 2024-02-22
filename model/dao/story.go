@@ -47,19 +47,9 @@ func (dao *StoryDao) FindStoryById(id uint) (story *Story, err error) {
 	return story, err
 }
 
-// FindStoryByTitleAndUserId 根据故事title查找故事
-func (dao *StoryDao) FindStoryByTitleAndUserId(uid uint, title string) (story *Story, err error) {
-	err = dao.DB.Model(&Story{}).Where("user_id = ? AND title = ? ", uid, title).First(&story).Error
-	return story, err
-}
-
 // DeleteStory 删除故事
 func (dao *StoryDao) DeleteStory(id uint) error {
-	story, err := dao.FindStoryById(id)
-	if err != nil {
-		return err
-	}
-	return dao.Delete(&story).Error
+	return dao.DB.Model(&Story{}).Where("id = ?", id).Delete(&Story{}).Error
 }
 
 // UpdateStory 更新故事

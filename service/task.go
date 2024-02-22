@@ -1,14 +1,11 @@
 package service
 
 import (
-	"errors"
-
 	"github.com/gin-gonic/gin"
 	"github.com/ncuhome/story-cook/model/dao"
 	"github.com/ncuhome/story-cook/model/dto"
 	"github.com/ncuhome/story-cook/model/vo"
 	"github.com/ncuhome/story-cook/pkg/myErrors"
-	"gorm.io/gorm"
 )
 
 type TaskSrv struct {
@@ -43,9 +40,8 @@ func (s *TaskSrv) ListTask(ctx *gin.Context, req *dto.ListTaskDto) (resp *vo.Res
 
 func (s *TaskSrv) DeleteTask(ctx *gin.Context, id uint) (resp *vo.Response, err error) {
 	err = dao.NewTaskDao(ctx).DeleteTask(id)
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		err = errors.New("没有这个任务")
-		return vo.Error(err, myErrors.ErrorNotExistTask), err
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
 	return vo.Success(), nil

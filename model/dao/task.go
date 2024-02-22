@@ -41,11 +41,7 @@ func (dao *TaskDao) ListTask(page, limit int) (tasks []*Task, total int64, err e
 }
 
 func (dao *TaskDao) DeleteTask(id uint) error {
-	story, err := dao.FindTaskById(id)
-	if err != nil {
-		return err
-	}
-	return dao.Delete(&story).Error
+	return dao.DB.Model(&Task{}).Where("id = ?", id).Delete(&Task{}).Error
 }
 
 func (dao *TaskDao) UpdateTask(id uint, task *Task) error {
