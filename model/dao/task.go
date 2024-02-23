@@ -8,7 +8,8 @@ import (
 
 type Task struct {
 	gorm.Model
-	Content string `gorm:"not null"`
+	Title   string `gorm:"not null"`
+	Content string `gorm:"type:longtext"`
 }
 
 type TaskDao struct {

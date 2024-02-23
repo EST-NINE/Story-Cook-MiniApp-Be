@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+
 	"github.com/gin-gonic/gin"
 	"github.com/ncuhome/story-cook/model/dao"
 	"github.com/ncuhome/story-cook/model/dto"
@@ -20,7 +21,6 @@ func (s *UserTaskSrv) CreateUserTask(ctx *gin.Context, req *dto.UserTaskDto) (re
 	task := dao.UserTask{
 		UserId: userInfo.Id,
 		TaskId: req.TaskId,
-		Status: req.Status,
 	}
 
 	err = dao.NewUserTaskDao(ctx).CreateUserTask(&task)
@@ -59,7 +59,6 @@ func (s *UserTaskSrv) UpdateUserTask(ctx *gin.Context, req *dto.UserTaskDto) (re
 		return vo.Error(err, myErrors.ErrorNotExistTask), err
 	}
 
-	task.Status = req.Status
 	err = taskDao.UpdateUserTask(req.ID, task)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorDatabase), err

@@ -8,10 +8,9 @@ import (
 
 type UserTask struct {
 	gorm.Model
-	Task   *Task `gorm:"ForeignKey:TaskId"`
-	UserId uint  `gorm:"not null"`
-	TaskId uint  `gorm:"not null"`
-	Status int   `gorm:"default:0"` // 0:未完成 1:完成
+	UserId  uint `gorm:"not null"`
+	TaskId  uint `gorm:"not null"`
+	StoryId uint `gorm:"not null"`
 }
 
 type UserTaskVO struct {

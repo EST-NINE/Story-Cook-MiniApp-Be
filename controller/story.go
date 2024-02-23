@@ -14,7 +14,7 @@ import (
 )
 
 func CreateStoryHandler(ctx *gin.Context) {
-	var req dto.CreateStoryDto
+	var req dto.StoryDto
 	if err := ctx.ShouldBind(&req); err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
@@ -88,7 +88,7 @@ func DeleteStoryHandler(ctx *gin.Context) {
 }
 
 func UpdateStoryHandler(ctx *gin.Context) {
-	var req dto.UpdateStoryDto
+	var req dto.StoryDto
 	if err := ctx.ShouldBind(&req); err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))

@@ -8,11 +8,12 @@ import (
 
 type Story struct {
 	gorm.Model
-	UserId   uint   `gorm:"not null"`
-	Title    string `gorm:"not null"`
-	Mood     string `gorm:"default:开心"`
-	Keywords string `gorm:"type:varchar(32)"`
-	Content  string `gorm:"type:longtext"`
+	UserId  uint   `gorm:"not null"`
+	Title   string `gorm:"not null"`
+	Content string `gorm:"type:longtext"`
+	Score   int    `gorm:"default:0"`
+	Money   int    `gorm:"default:0"`
+	Status  int    `gorm:"default:0"` // 0:未完成 1:完成
 }
 
 type StoryDao struct {

@@ -1,6 +1,8 @@
 package service
 
 import (
+	"reflect"
+
 	"github.com/gin-gonic/gin"
 	"github.com/ncuhome/story-cook/model/dao"
 	"github.com/ncuhome/story-cook/model/dto"
@@ -13,16 +15,14 @@ type StorySrv struct {
 }
 
 // CreateStory 创建故事
-func (s *StorySrv) CreateStory(ctx *gin.Context, req *dto.CreateStoryDto) (resp *vo.Response, err error) {
+func (s *StorySrv) CreateStory(ctx *gin.Context, req *dto.StoryDto) (resp *vo.Response, err error) {
 	claims, _ := ctx.Get("claims")
 	userInfo := claims.(*util.Claims)
 
 	story := dao.Story{
-		UserId:   userInfo.Id,
-		Title:    req.Title,
-		Keywords: req.Keywords,
-		Mood:     req.Mood,
-		Content:  req.Content,
+		UserId:  userInfo.Id,
+		Title:   req.Title,
+		Content: req.Content,
 	}
 
 	err = dao.NewStoryDao(ctx).CreateStory(&story)
@@ -71,19 +71,26 @@ func (s *StorySrv) DeleteStory(ctx *gin.Context, id uint) (resp *vo.Response, er
 }
 
 // UpdateStory 更新故事
-func (s *StorySrv) UpdateStory(ctx *gin.Context, req *dto.UpdateStoryDto) (resp *vo.Response, err error) {
+func (s *StorySrv) UpdateStory(ctx *gin.Context, req *dto.StoryDto) (resp *vo.Response, err error) {
 	storyDao := dao.NewStoryDao(ctx)
 	story, err := storyDao.FindStoryById(req.ID)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorNotExistStory), err
 	}
 
-	if req.UpdateContent != "" {
-		story.Content = req.UpdateContent
-	}
+	// 使用反射动态更新字段值
+	elem := reflect.ValueOf(req).Elem()
+	storyElem := reflect.ValueOf(story).Elem()
+	for i := 0; i < elem.NumField(); i++ {
+		fieldName := elem.Type().Field(i).Name
+		fieldValue := elem.Field(i).Interface()
 
-	if req.UpdateTitle != "" {
-		story.Title = req.UpdateTitle
+		if reflect.ValueOf(fieldValue).IsValid() {
+			storyField := storyElem.FieldByName(fieldName)
+			if storyField.IsValid() && storyField.CanSet() {
+				storyField.Set(reflect.ValueOf(fieldValue))
+			}
+		}
 	}
 
 	err = storyDao.UpdateStory(req.ID, story)
