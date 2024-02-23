@@ -1,8 +1,6 @@
 package service
 
 import (
-	"errors"
-
 	"github.com/gin-gonic/gin"
 	"github.com/ncuhome/story-cook/model/dao"
 	"github.com/ncuhome/story-cook/model/dto"
@@ -19,8 +17,9 @@ func (s *UserTaskSrv) CreateUserTask(ctx *gin.Context, req *dto.UserTaskDto) (re
 	userInfo := claims.(*util.Claims)
 
 	task := dao.UserTask{
-		UserId: userInfo.Id,
-		TaskId: req.TaskId,
+		UserId:  userInfo.Id,
+		TaskId:  req.TaskId,
+		StoryId: req.StoryId,
 	}
 
 	err = dao.NewUserTaskDao(ctx).CreateUserTask(&task)
@@ -32,11 +31,8 @@ func (s *UserTaskSrv) CreateUserTask(ctx *gin.Context, req *dto.UserTaskDto) (re
 }
 
 func (s *UserTaskSrv) FindUserTaskById(ctx *gin.Context, id uint) (resp *vo.Response, err error) {
-	task, err := dao.NewUserTaskDao(ctx).GetUserTaskById(id)
+	task, err := dao.NewUserTaskDao(ctx).FindUserTaskById(id)
 	if err != nil {
-		return vo.Error(err, myErrors.ErrorNotExistTask), err
-	} else if task == nil {
-		err = errors.New("task not found")
 		return vo.Error(err, myErrors.ErrorNotExistTask), err
 	}
 
@@ -54,9 +50,11 @@ func (s *UserTaskSrv) DeleteUserTask(ctx *gin.Context, id uint) (resp *vo.Respon
 
 func (s *UserTaskSrv) UpdateUserTask(ctx *gin.Context, req *dto.UserTaskDto) (resp *vo.Response, err error) {
 	taskDao := dao.NewUserTaskDao(ctx)
-	task, err := taskDao.FindUserTaskById(req.ID)
-	if err != nil {
-		return vo.Error(err, myErrors.ErrorNotExistTask), err
+
+	task := &dao.UserTask{
+		Score:  req.Score,
+		Money:  req.Money,
+		Status: req.Status,
 	}
 
 	err = taskDao.UpdateUserTask(req.ID, task)
@@ -64,7 +62,7 @@ func (s *UserTaskSrv) UpdateUserTask(ctx *gin.Context, req *dto.UserTaskDto) (re
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
-	return vo.SuccessWithData(task), nil
+	return vo.Success(), nil
 }
 
 func (s *UserTaskSrv) ListUserTask(ctx *gin.Context, limit int) (resp *vo.Response, err error) {
@@ -76,5 +74,5 @@ func (s *UserTaskSrv) ListUserTask(ctx *gin.Context, limit int) (resp *vo.Respon
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
-	return vo.SuccessWithData(tasks), nil
+	return vo.List(tasks, int64(limit)), nil
 }

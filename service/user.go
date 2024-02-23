@@ -72,13 +72,8 @@ func (s *UserSrv) UpdateInfo(ctx *gin.Context, req *dto.UserDto) (resp *vo.Respo
 	userInfo := claims.(*util.Claims)
 
 	userDao := dao.NewUserDao(ctx)
-	user, err := userDao.FindUserByUserId(userInfo.Id)
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return vo.Error(err, myErrors.ErrorNotExistUser), err
-	}
-
-	if req.UserName != "" {
-		user.UserName = req.UserName
+	user := &dao.User{
+		UserName: req.UserName,
 	}
 
 	err = userDao.UpdateUserById(userInfo.Id, user)

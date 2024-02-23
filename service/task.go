@@ -59,17 +59,9 @@ func (s *TaskSrv) DeleteTask(ctx *gin.Context, id uint) (resp *vo.Response, err 
 
 func (s *TaskSrv) UpdateTask(ctx *gin.Context, req *dto.TaskDto) (resp *vo.Response, err error) {
 	taskDao := dao.NewTaskDao(ctx)
-	task, err := taskDao.FindTaskById(req.ID)
-	if err != nil {
-		return vo.Error(err, myErrors.ErrorNotExistTask), err
-	}
-
-	if req.Title != "" {
-		task.Title = req.Title
-	}
-
-	if req.Content != "" {
-		task.Content = req.Content
+	task := &dao.Task{
+		Title:   req.Title,
+		Content: req.Content,
 	}
 
 	err = taskDao.UpdateTask(req.ID, task)
@@ -77,6 +69,5 @@ func (s *TaskSrv) UpdateTask(ctx *gin.Context, req *dto.TaskDto) (resp *vo.Respo
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
-	respDate := vo.BuildTaskResp(task)
-	return vo.SuccessWithData(respDate), nil
+	return vo.Success(), nil
 }

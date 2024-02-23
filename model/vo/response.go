@@ -1,6 +1,10 @@
 package vo
 
-import "github.com/ncuhome/story-cook/pkg/myErrors"
+import (
+	"errors"
+
+	"github.com/ncuhome/story-cook/pkg/myErrors"
+)
 
 type Response struct {
 	Code int    `json:"code"`
@@ -9,6 +13,10 @@ type Response struct {
 }
 
 func Error(err error, status ...int) *Response {
+	if err == nil {
+		err = errors.New("internal error")
+	}
+
 	code := myErrors.ERROR
 	if len(status) > 0 {
 		code = status[0]

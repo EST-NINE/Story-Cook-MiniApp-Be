@@ -82,13 +82,8 @@ func (s *AdminSrv) UpdateInfo(ctx *gin.Context, req *dto.AdminDto) (resp *vo.Res
 	adminInfo := claims.(*util.Claims)
 
 	adminDao := dao.NewAdminDao(ctx)
-	admin, err := adminDao.FindAdminByAdminId(adminInfo.Id)
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return vo.Error(err, myErrors.ErrorNotExistAdmin), err
-	}
-
-	if req.AdminName != "" {
-		admin.AdminName = req.AdminName
+	admin := &dao.Admin{
+		AdminName: req.AdminName,
 	}
 
 	err = adminDao.UpdateAdminById(adminInfo.Id, admin)

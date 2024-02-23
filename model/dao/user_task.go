@@ -21,7 +21,9 @@ type UserTaskVO struct {
 	TaskId  uint   `json:"task_id"`
 	StoryId uint   `json:"story_id"`
 	Title   string `json:"title"`
-	Status  int    `json:"status"`
+	Score   int    `gorm:"default:0"`
+	Money   int    `gorm:"default:0"`
+	Status  int    `gorm:"default:0"` // 0:未完成 1:完成
 }
 
 type UserTaskDao struct {

@@ -95,13 +95,6 @@ func ListUserTaskHandler(ctx *gin.Context) {
 		return
 	}
 
-	var req dto.ListUserTaskDto
-	if err := ctx.ShouldBind(&req); err != nil {
-		util.LogrusObj.Infoln(err)
-		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
-		return
-	}
-
 	taskSrv := service.UserTaskSrv{}
 	resp, err := taskSrv.ListUserTask(ctx, limit)
 	if err != nil {

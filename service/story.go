@@ -71,17 +71,9 @@ func (s *StorySrv) DeleteStory(ctx *gin.Context, id uint) (resp *vo.Response, er
 // UpdateStory 更新故事
 func (s *StorySrv) UpdateStory(ctx *gin.Context, req *dto.StoryDto) (resp *vo.Response, err error) {
 	storyDao := dao.NewStoryDao(ctx)
-	story, err := storyDao.FindStoryById(req.ID)
-	if err != nil {
-		return vo.Error(err, myErrors.ErrorNotExistStory), err
-	}
-
-	if req.Title != "" {
-		story.Title = req.Title
-	}
-
-	if req.Content != "" {
-		story.Content = req.Content
+	story := &dao.Story{
+		Title:   req.Title,
+		Content: req.Content,
 	}
 
 	err = storyDao.UpdateStory(req.ID, story)
@@ -89,6 +81,5 @@ func (s *StorySrv) UpdateStory(ctx *gin.Context, req *dto.StoryDto) (resp *vo.Re
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
-	respDate := vo.BuildStoryResp(story)
-	return vo.SuccessWithData(respDate), nil
+	return vo.Success(), nil
 }
