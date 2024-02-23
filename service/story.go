@@ -1,8 +1,6 @@
 package service
 
 import (
-	"reflect"
-
 	"github.com/gin-gonic/gin"
 	"github.com/ncuhome/story-cook/model/dao"
 	"github.com/ncuhome/story-cook/model/dto"
@@ -78,19 +76,12 @@ func (s *StorySrv) UpdateStory(ctx *gin.Context, req *dto.StoryDto) (resp *vo.Re
 		return vo.Error(err, myErrors.ErrorNotExistStory), err
 	}
 
-	// 使用反射动态更新字段值
-	elem := reflect.ValueOf(req).Elem()
-	storyElem := reflect.ValueOf(story).Elem()
-	for i := 0; i < elem.NumField(); i++ {
-		fieldName := elem.Type().Field(i).Name
-		fieldValue := elem.Field(i).Interface()
+	if req.Title != "" {
+		story.Title = req.Title
+	}
 
-		if reflect.ValueOf(fieldValue).IsValid() {
-			storyField := storyElem.FieldByName(fieldName)
-			if storyField.IsValid() && storyField.CanSet() {
-				storyField.Set(reflect.ValueOf(fieldValue))
-			}
-		}
+	if req.Content != "" {
+		story.Content = req.Content
 	}
 
 	err = storyDao.UpdateStory(req.ID, story)

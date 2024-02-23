@@ -11,9 +11,6 @@ type Story struct {
 	UserId  uint   `gorm:"not null"`
 	Title   string `gorm:"not null"`
 	Content string `gorm:"type:longtext"`
-	Score   int    `gorm:"default:0"`
-	Money   int    `gorm:"default:0"`
-	Status  int    `gorm:"default:0"` // 0:未完成 1:完成
 }
 
 type StoryDao struct {

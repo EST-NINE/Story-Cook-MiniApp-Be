@@ -11,11 +11,16 @@ type UserTask struct {
 	UserId  uint `gorm:"not null"`
 	TaskId  uint `gorm:"not null"`
 	StoryId uint `gorm:"not null"`
+	Score   int  `gorm:"default:0"`
+	Money   int  `gorm:"default:0"`
+	Status  int  `gorm:"default:0"` // 0:未完成 1:完成
 }
 
 type UserTaskVO struct {
 	ID      uint   `json:"id"`
-	Content string `json:"content"`
+	TaskId  uint   `json:"task_id"`
+	StoryId uint   `json:"story_id"`
+	Title   string `json:"title"`
 	Status  int    `json:"status"`
 }
 
@@ -49,7 +54,7 @@ func (dao *UserTaskDao) UpdateUserTask(id uint, task *UserTask) error {
 
 func (dao *UserTaskDao) GetUserTaskById(id uint) (task *UserTaskVO, err error) {
 	err = dao.DB.Table("task t").
-		Select("t.id, t.content, ut.status").
+		Select("ut.id, ut.task_id, ut.story_id, ut.status, t.id, t.title").
 		Joins("LEFT JOIN user_task ut ON t.id = ut.task_id").
 		Where("ut.id = ? AND ut.deleted_at IS NULL", id).
 		Scan(&task).
