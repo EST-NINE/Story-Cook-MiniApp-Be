@@ -17,13 +17,12 @@ type UserTask struct {
 }
 
 type UserTaskVO struct {
-	ID      uint   `json:"id"`
-	TaskId  uint   `json:"task_id"`
-	StoryId uint   `json:"story_id"`
-	Title   string `json:"title"`
-	Score   int    `gorm:"default:0"`
-	Money   int    `gorm:"default:0"`
-	Status  int    `gorm:"default:0"` // 0:未完成 1:完成
+	ID      uint `json:"id"`
+	TaskId  uint `json:"task_id"`
+	StoryId uint `json:"story_id"`
+	Status  int  `json:"status"`
+
+	Title string `json:"title"`
 }
 
 type UserTaskDao struct {
@@ -54,19 +53,9 @@ func (dao *UserTaskDao) UpdateUserTask(id uint, task *UserTask) error {
 	return dao.DB.Model(&UserTask{}).Where("id = ?", id).Updates(task).Error
 }
 
-func (dao *UserTaskDao) GetUserTaskById(id uint) (task *UserTaskVO, err error) {
-	err = dao.DB.Table("task t").
-		Select("ut.id, ut.task_id, ut.story_id, ut.status, t.id, t.title").
-		Joins("LEFT JOIN user_task ut ON t.id = ut.task_id").
-		Where("ut.id = ? AND ut.deleted_at IS NULL", id).
-		Scan(&task).
-		Error
-	return task, err
-}
-
 func (dao *UserTaskDao) ListUserTask(userId uint, limit int) (tasks []*UserTaskVO, err error) {
 	err = dao.DB.Table("task t").
-		Select("t.id, t.content, ut.status").
+		Select("t.title, t.id as task_id, ut.id, ut.story_id, ut.status ").
 		Joins("LEFT JOIN user_task ut ON t.id = ut.task_id AND ut.user_id = ?", userId).
 		Where("t.deleted_at IS NULL").
 		Order("t.created_at DESC").
