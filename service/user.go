@@ -37,7 +37,6 @@ func (s *UserSrv) Login(ctx *gin.Context, req *dto.UserDto) (resp *vo.Response, 
 		user = &dao.User{
 			UserName: fmt.Sprint("用户" + uuid.New().String()[:6]),
 			Openid:   openid,
-			Money:    0,
 		}
 
 		if err = userDao.CreateUser(user); err != nil {

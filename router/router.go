@@ -20,16 +20,22 @@ func NewRouter() *gin.Engine {
 
 	// 用户端操作
 	public.POST("user/login", controller.UserLoginHandler)
-	authed := public.Group("/", middleware.JWTUserAuth()) // 登录保护
+	user := public.Group("/user", middleware.JWTUserAuth()) // 登录保护
 	{
-		authed.PUT("user/info", controller.UpdateUserInfoHandler)
-		authed.GET("user/info", controller.GetUserInfoHandler)
+		user.PUT("info", controller.UpdateUserInfoHandler)
+		user.GET("info", controller.GetUserInfoHandler)
 
-		authed.GET("story/:id", controller.GetStoryHandler)
-		authed.POST("story/save", controller.CreateStoryHandler)
-		authed.POST("story/list", controller.ListStoryHandler)
-		authed.DELETE("story/:id", controller.DeleteStoryHandler)
-		authed.PUT("story", controller.UpdateStoryHandler)
+		user.GET("story/:id", controller.GetStoryHandler)
+		user.POST("story/save", controller.CreateStoryHandler)
+		user.POST("story/list", controller.ListStoryHandler)
+		user.DELETE("story/:id", controller.DeleteStoryHandler)
+		user.PUT("story", controller.UpdateStoryHandler)
+
+		user.GET("task/:id", controller.GetUserTaskHandler)
+		user.GET("tasks/:limit", controller.ListUserTaskHandler)
+		user.POST("task/save", controller.CreateUserTaskHandler)
+		user.DELETE("task/:id", controller.DeleteUserTaskHandler)
+		user.PUT("task", controller.UpdateUserTaskHandler)
 	}
 
 	// 管理端操作

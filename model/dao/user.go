@@ -10,7 +10,7 @@ type User struct {
 	gorm.Model
 	UserName string
 	Openid   string `gorm:"unique"`
-	Money    int
+	Money    int    `gorm:"default:0"`
 }
 
 type UserDao struct {
