@@ -13,6 +13,7 @@ type TaskSrv struct {
 
 func (s *TaskSrv) CreateTask(ctx *gin.Context, req *dto.TaskDto) (resp *vo.Response, err error) {
 	task := dao.Task{
+		Title:   req.Title,
 		Content: req.Content,
 	}
 
@@ -61,6 +62,10 @@ func (s *TaskSrv) UpdateTask(ctx *gin.Context, req *dto.TaskDto) (resp *vo.Respo
 	task, err := taskDao.FindTaskById(req.ID)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorNotExistTask), err
+	}
+
+	if req.Title != "" {
+		task.Title = req.Title
 	}
 
 	if req.Content != "" {
