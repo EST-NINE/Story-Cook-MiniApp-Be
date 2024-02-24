@@ -8,12 +8,13 @@ import (
 
 type UserTask struct {
 	gorm.Model
-	UserId  uint `gorm:"not null"`
-	TaskId  uint `gorm:"not null"`
-	StoryId uint `gorm:"not null"`
-	Score   int  `gorm:"default:0"`
-	Money   int  `gorm:"default:0"`
-	Status  int  `gorm:"default:0"` // 0:未完成 1:完成
+	UserId  uint   `gorm:"not null"`
+	TaskId  uint   `gorm:"not null"`
+	StoryId uint   `gorm:"not null"`
+	Comment string `gorm:"type:longtext"`
+	Score   int    `gorm:"default:0"`
+	Money   int    `gorm:"default:0"`
+	Status  int    `gorm:"default:0"` // 0:未完成 1:完成
 }
 
 type UserTaskVO struct {

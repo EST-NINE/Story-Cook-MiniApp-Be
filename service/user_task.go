@@ -52,9 +52,10 @@ func (s *UserTaskSrv) UpdateUserTask(ctx *gin.Context, req *dto.UserTaskDto) (re
 	taskDao := dao.NewUserTaskDao(ctx)
 
 	task := &dao.UserTask{
-		Score:  req.Score,
-		Money:  req.Money,
-		Status: req.Status,
+		Comment: req.Comment,
+		Score:   req.Score,
+		Money:   req.Money,
+		Status:  req.Status,
 	}
 
 	err = taskDao.UpdateUserTask(req.ID, task)
