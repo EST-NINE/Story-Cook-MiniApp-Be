@@ -6,8 +6,8 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-func InitFile() {
-	file, err := ini.Load("./config/config.ini")
+func InitDevFile() {
+	file, err := ini.Load("./config/config_dev.ini")
 	if err != nil {
 		log.Print(err)
 		panic(err)

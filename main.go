@@ -18,7 +18,7 @@ func main() {
 }
 
 func init() {
-	config.InitFile()
+	// config.InitDevFile()
 	util.InitLog()
 	dao.InitMysql()
 }
