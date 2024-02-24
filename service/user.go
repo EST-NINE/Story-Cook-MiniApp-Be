@@ -72,8 +72,16 @@ func (s *UserSrv) UpdateInfo(ctx *gin.Context, req *dto.UserDto) (resp *vo.Respo
 	userInfo := claims.(*util.Claims)
 
 	userDao := dao.NewUserDao(ctx)
-	user := &dao.User{
-		UserName: req.UserName,
+	user, err := userDao.FindUserByUserId(userInfo.Id)
+	if req.UserName != "" {
+		user.UserName = req.UserName
+	}
+
+	if user.Money+req.Money < 0 {
+		err = errors.New("money not enough")
+		return vo.Error(err, myErrors.ErrorNotEnoughMoney), err
+	} else {
+		user.Money += req.Money
 	}
 
 	err = userDao.UpdateUserById(userInfo.Id, user)
@@ -81,5 +89,6 @@ func (s *UserSrv) UpdateInfo(ctx *gin.Context, req *dto.UserDto) (resp *vo.Respo
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
-	return vo.Success(), nil
+	userResp := vo.BuildUserResp(user)
+	return vo.SuccessWithData(userResp), nil
 }

@@ -11,7 +11,7 @@ const (
 	ErrorDatabase
 
 	ErrorCreateUser
-	ErrorNotExistUser
+	ErrorNotEnoughMoney
 
 	ErrorNotExistStory
 	ErrorNotExistTask

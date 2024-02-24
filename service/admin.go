@@ -21,7 +21,10 @@ func (s *AdminSrv) Register(ctx *gin.Context, req *dto.AdminDto) (resp *vo.Respo
 		AdminName: req.AdminName,
 	}
 	// 密码加密存储
-	_ = admin.SetPassword(req.Password)
+	err = admin.SetPassword(req.Password)
+	if err != nil {
+		return vo.Error(err), err
+	}
 
 	if err = adminDao.CreateAdmin(admin); err != nil {
 		return vo.Error(err, myErrors.ErrorDatabase), err
@@ -32,11 +35,7 @@ func (s *AdminSrv) Register(ctx *gin.Context, req *dto.AdminDto) (resp *vo.Respo
 		return vo.Error(err, myErrors.ErrorAuthToken), err
 	}
 
-	respData := vo.AdminTokenDataResp{
-		Admin: vo.BuildAdminResp(admin),
-		Token: token,
-	}
-	return vo.SuccessWithData(respData), nil
+	return vo.SuccessWithAdminAndToken(admin, token), nil
 }
 
 func (s *AdminSrv) Login(ctx *gin.Context, req *dto.AdminDto) (resp *vo.Response, err error) {
@@ -56,11 +55,7 @@ func (s *AdminSrv) Login(ctx *gin.Context, req *dto.AdminDto) (resp *vo.Response
 		return vo.Error(err), err
 	}
 
-	respData := vo.AdminTokenDataResp{
-		Admin: vo.BuildAdminResp(admin),
-		Token: token,
-	}
-	return vo.SuccessWithData(respData), nil
+	return vo.SuccessWithAdminAndToken(admin, token), nil
 }
 
 func (s *AdminSrv) AdminInfo(ctx *gin.Context) (resp *vo.Response, err error) {

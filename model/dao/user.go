@@ -39,5 +39,10 @@ func (dao *UserDao) FindUserByOpenid(openid string) (user *User, err error) {
 }
 
 func (dao *UserDao) UpdateUserById(id uint, user *User) error {
-	return dao.DB.Model(&User{}).Where("id = ?", id).Updates(user).Error
+	updateFields := map[string]interface{}{
+		"user_name": user.UserName,
+		"money":     user.Money,
+	}
+
+	return dao.DB.Model(&User{}).Where("id = ?", id).Updates(updateFields).Error
 }
