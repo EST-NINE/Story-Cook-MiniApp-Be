@@ -11,9 +11,7 @@ DbPassWord =
 DbName =
 
 [spark]
-AppId =
 ApiKey =
-ApiSecret =
 
 [wx]
 WxAppId =

@@ -14,7 +14,7 @@ func InitDevFile() {
 	}
 	LoadServer(file)
 	LoadMysqlData(file)
-	LoadSpark(file)
+	LoadTongYi(file)
 	LoadWx(file)
 }
 
@@ -32,10 +32,8 @@ func LoadMysqlData(file *ini.File) {
 	DbName = file.Section("mysql").Key("DbName").String()
 }
 
-func LoadSpark(file *ini.File) {
-	AppId = file.Section("spark").Key("AppId").String()
+func LoadTongYi(file *ini.File) {
 	ApiKey = file.Section("spark").Key("ApiKey").String()
-	ApiSecret = file.Section("spark").Key("ApiSecret").String()
 }
 
 func LoadWx(file *ini.File) {
