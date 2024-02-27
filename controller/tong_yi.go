@@ -35,7 +35,7 @@ func extendStory(title string, background string, keywords string) string {
 
 	// 构建请求的数据
 	requestBody := map[string]interface{}{
-		"model": "qwen-max",
+		"model": "qwen-max-1201",
 		"input": map[string]interface{}{
 			"messages": []map[string]string{
 				{"role": "system", "content": charaSetting},
