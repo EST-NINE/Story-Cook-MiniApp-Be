@@ -33,7 +33,7 @@ func LoadMysqlData(file *ini.File) {
 }
 
 func LoadTongYi(file *ini.File) {
-	ApiKey = file.Section("spark").Key("ApiKey").String()
+	ApiKey = file.Section("tong_yi").Key("ApiKey").String()
 }
 
 func LoadWx(file *ini.File) {

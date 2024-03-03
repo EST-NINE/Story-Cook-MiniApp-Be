@@ -19,7 +19,6 @@ func NewRouter() *gin.Engine {
 	public.GET("ping", func(ctx *gin.Context) { ctx.JSON(http.StatusOK, "pong!") })
 
 	// 用户端操作
-	public.POST("user/login", controller.UserLoginHandler)
 	user := public.Group("/user", middleware.JWTUserAuth()) // 登录保护
 	{
 		// 信息
@@ -29,6 +28,7 @@ func NewRouter() *gin.Engine {
 		// 故事
 		user.GET("story/:id", controller.GetStoryHandler)
 		user.POST("story/save", controller.CreateStoryHandler)
+		user.POST("story/extend", controller.ExtendStoryHandler)
 		user.POST("story/list", controller.ListStoryHandler)
 		user.DELETE("story/:id", controller.DeleteStoryHandler)
 		user.PUT("story", controller.UpdateStoryHandler)
