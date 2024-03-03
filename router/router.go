@@ -19,6 +19,7 @@ func NewRouter() *gin.Engine {
 	public.GET("ping", func(ctx *gin.Context) { ctx.JSON(http.StatusOK, "pong!") })
 
 	// 用户端操作
+	public.POST("user/login", controller.UserLoginHandler)
 	user := public.Group("/user", middleware.JWTUserAuth()) // 登录保护
 	{
 		// 信息
