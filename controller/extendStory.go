@@ -50,7 +50,6 @@ func ExtendStoryHandler(ctx *gin.Context) {
 		if line == "" {
 			// 发送当前事件到前端
 			_, err := fmt.Fprintf(w, eventData[0]+"\n"+eventData[1]+"\n"+eventData[2]+"\n"+eventData[3]+"\n\n")
-			fmt.Printf(eventData[0] + "\n" + eventData[1] + "\n" + eventData[2] + "\n" + eventData[3] + "\n\n")
 			if err != nil {
 				return
 			}
