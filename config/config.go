@@ -15,9 +15,7 @@ var (
 	DbPassWord string = os.Getenv("DB_PASSWORD")
 	DbName     string = os.Getenv("DB_NAME")
 
-	AppId     string = os.Getenv("APP_ID")
-	ApiKey    string = os.Getenv("API_KEY")
-	ApiSecret string = os.Getenv("API_SECRET")
+	ApiKey string = os.Getenv("API_KEY")
 
 	WxAppId     string = os.Getenv("WX_APP_ID")
 	WxAppSecret string = os.Getenv("WX_APP_SECRET")

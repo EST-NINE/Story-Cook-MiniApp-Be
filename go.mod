@@ -7,6 +7,8 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/google/uuid v1.6.0
 	github.com/sirupsen/logrus v1.9.3
+	golang.org/x/crypto v0.9.0
+	gopkg.in/antage/eventsource.v1 v1.0.0-20150318155416-803f4c5af225
 	gopkg.in/ini.v1 v1.67.0
 	gorm.io/driver/mysql v1.5.4
 	gorm.io/gorm v1.25.7
@@ -34,11 +36,9 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	golang.org/x/arch v0.3.0 // indirect
-	golang.org/x/crypto v0.9.0 // indirect
 	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
-	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

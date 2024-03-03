@@ -13,3 +13,9 @@ type ListStoryDto struct {
 	Page  int `json:"page" example:"1"`
 	Limit int `json:"limit" example:"10"`
 }
+
+type ExtendStoryDto struct {
+	Title      string `json:"title" example:"林黛玉倒拔垂杨柳"`
+	Background string `json:"background" example:"略"`
+	Keywords   string `json:"keywords" example:"贾宝玉 薛宝钗"`
+}

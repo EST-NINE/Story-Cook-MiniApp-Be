@@ -10,10 +10,8 @@ DbUser =
 DbPassWord =
 DbName =
 
-[spark]
-AppId =
+[tong_yi]
 ApiKey =
-ApiSecret =
 
 [wx]
 WxAppId =
