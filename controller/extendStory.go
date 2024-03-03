@@ -11,8 +11,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-
-	"gopkg.in/antage/eventsource.v1"
 )
 
 func ExtendStoryHandler(ctx *gin.Context) {
@@ -28,15 +26,14 @@ func ExtendStoryHandler(ctx *gin.Context) {
 		_ = Body.Close()
 	}(resp.Body)
 
-	es := eventsource.New(nil, nil)
 	w := ctx.Writer
-
 	// 设置请求头，告知客户端这是一个SSE连接
 	w.Header().Set("Content-Type", "text/event-stream")
-	_, ok := w.(http.Flusher)
-
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
+	flusher, ok := w.(http.Flusher)
 	if !ok {
-		log.Panic("server not support") //不兼容
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Streaming unsupported!"})
 	}
 
 	// 读取SSE响应
@@ -54,6 +51,7 @@ func ExtendStoryHandler(ctx *gin.Context) {
 				return
 			}
 			eventData = nil
+			flusher.Flush()
 		}
 	}
 
@@ -61,6 +59,4 @@ func ExtendStoryHandler(ctx *gin.Context) {
 	if err := scanner.Err(); err != nil {
 		log.Println("Error reading response from external server:", err)
 	}
-
-	es.Close()
 }
