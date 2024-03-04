@@ -43,6 +43,10 @@ func SendReqToTongYi(title string, background string, keywords string) *http.Res
 				{"role": "user", "content": prompt},
 			},
 		},
+		"parameters": map[string]interface{}{
+			"incremental_output": "true",
+			"enable_search":      "true",
+		},
 	}
 
 	// 将请求的数据转换为JSON格式
