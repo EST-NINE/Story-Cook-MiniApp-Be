@@ -12,16 +12,16 @@ import (
 	"github.com/ncuhome/story-cook/service"
 )
 
-func CreateUserTaskHandler(ctx *gin.Context) {
-	var req dto.UserTaskDto
+func CreateOrderHandler(ctx *gin.Context) {
+	var req dto.OrderDto
 	if err := ctx.ShouldBind(&req); err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
 		return
 	}
 
-	taskSrv := service.UserTaskSrv{}
-	resp, err := taskSrv.CreateUserTask(ctx, &req)
+	orderSrv := service.OrderSrv{}
+	resp, err := orderSrv.CreateOrder(ctx, &req)
 	if err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusInternalServerError, resp)
@@ -30,7 +30,7 @@ func CreateUserTaskHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
-func GetUserTaskHandler(ctx *gin.Context) {
+func GetOrderHandler(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -39,8 +39,8 @@ func GetUserTaskHandler(ctx *gin.Context) {
 		return
 	}
 
-	taskSrv := service.UserTaskSrv{}
-	resp, err := taskSrv.FindUserTaskById(ctx, uint(id))
+	orderSrv := service.OrderSrv{}
+	resp, err := orderSrv.FindOrderById(ctx, uint(id))
 	if err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusInternalServerError, resp)
@@ -49,7 +49,7 @@ func GetUserTaskHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
-func DeleteUserTaskHandler(ctx *gin.Context) {
+func DeleteOrderHandler(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -58,8 +58,8 @@ func DeleteUserTaskHandler(ctx *gin.Context) {
 		return
 	}
 
-	taskSrv := service.UserTaskSrv{}
-	resp, err := taskSrv.DeleteUserTask(ctx, uint(id))
+	orderSrv := service.OrderSrv{}
+	resp, err := orderSrv.DeleteOrder(ctx, uint(id))
 	if err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusInternalServerError, resp)
@@ -68,16 +68,16 @@ func DeleteUserTaskHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
-func UpdateUserTaskHandler(ctx *gin.Context) {
-	var req dto.UserTaskDto
+func UpdateOrderHandler(ctx *gin.Context) {
+	var req dto.OrderDto
 	if err := ctx.ShouldBind(&req); err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
 		return
 	}
 
-	taskSrv := service.UserTaskSrv{}
-	resp, err := taskSrv.UpdateUserTask(ctx, &req)
+	orderSrv := service.OrderSrv{}
+	resp, err := orderSrv.UpdateOrder(ctx, &req)
 	if err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusInternalServerError, resp)
@@ -86,17 +86,16 @@ func UpdateUserTaskHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
-func ListUserTaskHandler(ctx *gin.Context) {
-	limitStr := ctx.Param("limit")
-	limit, err := strconv.Atoi(limitStr)
-	if err != nil {
+func ListOrderHandler(ctx *gin.Context) {
+	var req dto.ListOrderDto
+	if err := ctx.ShouldBind(&req); err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
 		return
 	}
 
-	taskSrv := service.UserTaskSrv{}
-	resp, err := taskSrv.ListUserTask(ctx, limit)
+	orderSrv := service.OrderSrv{}
+	resp, err := orderSrv.ListOrder(ctx, &req)
 	if err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusInternalServerError, resp)
