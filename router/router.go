@@ -34,6 +34,10 @@ func NewRouter() *gin.Engine {
 		user.DELETE("story/:id", controller.DeleteStoryHandler)
 		user.PUT("story", controller.UpdateStoryHandler)
 
+		// 每日任务
+		user.GET("task", controller.GetDailyTaskHandler)
+		user.POST("task/list", controller.ListTaskHandler)
+
 		// 订单
 		user.GET("order/:id", controller.GetOrderHandler)
 		user.POST("orders", controller.ListOrderHandler)

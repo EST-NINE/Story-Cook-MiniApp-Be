@@ -48,3 +48,8 @@ func (dao *TaskDao) DeleteTask(id uint) error {
 func (dao *TaskDao) UpdateTask(id uint, task *Task) error {
 	return dao.DB.Model(&Task{}).Where("id = ?", id).Updates(task).Error
 }
+
+func (dao *TaskDao) GetDailyTask() (task *Task, err error) {
+	err = dao.DB.Model(&Task{}).Last(&task).Error
+	return task, err
+}
