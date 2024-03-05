@@ -71,3 +71,12 @@ func (s *TaskSrv) UpdateTask(ctx *gin.Context, req *dto.TaskDto) (resp *vo.Respo
 
 	return vo.Success(), nil
 }
+
+func (s *TaskSrv) GetDailyTask(ctx *gin.Context) (resp *vo.Response, err error) {
+	task, err := dao.NewTaskDao(ctx).GetDailyTask()
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorNotExistTask), err
+	}
+
+	return vo.SuccessWithData(vo.BuildTaskResp(task)), nil
+}

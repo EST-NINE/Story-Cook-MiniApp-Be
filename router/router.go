@@ -34,12 +34,16 @@ func NewRouter() *gin.Engine {
 		user.DELETE("story/:id", controller.DeleteStoryHandler)
 		user.PUT("story", controller.UpdateStoryHandler)
 
-		// 用户每日任务
-		user.GET("task/:id", controller.GetUserTaskHandler)
-		user.GET("tasks/:limit", controller.ListUserTaskHandler)
-		user.POST("task/save", controller.CreateUserTaskHandler)
-		user.DELETE("task/:id", controller.DeleteUserTaskHandler)
-		user.PUT("task", controller.UpdateUserTaskHandler)
+		// 每日任务
+		user.GET("task", controller.GetDailyTaskHandler)
+		user.POST("task/list", controller.ListTaskHandler)
+
+		// 订单
+		user.GET("order/:id", controller.GetOrderHandler)
+		user.POST("orders", controller.ListOrderHandler)
+		user.POST("order/save", controller.CreateOrderHandler)
+		user.DELETE("order/:id", controller.DeleteOrderHandler)
+		user.PUT("order", controller.UpdateOrderHandler)
 	}
 
 	// 管理端操作
