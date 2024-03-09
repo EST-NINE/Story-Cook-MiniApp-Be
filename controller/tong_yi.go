@@ -16,7 +16,7 @@ func SendReqToTongYi(charaSetting string, prompt string) *http.Response {
 	apiKey := config.ApiKey
 	// 构建请求的数据
 	requestBody := map[string]interface{}{
-		"model": "qwen-max-1201",
+		"model": "qwen-max",
 		"input": map[string]interface{}{
 			"messages": []map[string]string{
 				{"role": "system", "content": charaSetting},
@@ -26,6 +26,7 @@ func SendReqToTongYi(charaSetting string, prompt string) *http.Response {
 		"parameters": map[string]interface{}{
 			"incremental_output": "true",
 			"enable_search":      "true",
+			"temperature":        "1.90",
 		},
 	}
 
