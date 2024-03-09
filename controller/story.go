@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"fmt"
+	"github.com/ncuhome/story-cook/pkg/tongyi"
 	"net/http"
 	"strconv"
 
@@ -29,6 +31,22 @@ func CreateStoryHandler(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, resp)
+}
+
+func ExtendStoryHandler(ctx *gin.Context) {
+	var req dto.ExtendStoryDto
+	if err := ctx.ShouldBind(&req); err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
+		return
+	}
+
+	charaSetting := tongyi.ExtendStoryChara
+	prompt := fmt.Sprintf("标题：%s 故事背景：%s 关键词：%s", req.Title, req.Background, req.Keywords)
+	if err := ForWardSSE(ctx, prompt, charaSetting); err != nil {
+		util.LogrusObj.Infoln(err)
+		return
+	}
 }
 
 func GetStoryHandler(ctx *gin.Context) {
