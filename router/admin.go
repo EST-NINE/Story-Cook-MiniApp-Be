@@ -14,7 +14,7 @@ func NewAdminGroup() *AdminGroup {
 
 func (a *AdminGroup) RegisterRoutes(group *gin.RouterGroup) {
 	group.POST("login", controller.AdminLoginHandler)
-	admin := group.Group("/admin", middleware.JWTAdminAuth()) // 登录保护
+	admin := group.Use(middleware.JWTAdminAuth()) // 登录保护
 	{
 		// 信息
 		admin.POST("register", controller.AdminRegisterHandler)
