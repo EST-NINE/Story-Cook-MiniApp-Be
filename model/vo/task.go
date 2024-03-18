@@ -14,6 +14,6 @@ func BuildTaskResp(task *dao.Task) *TaskResp {
 		ID:       task.ID,
 		Title:    task.Title,
 		Content:  task.Content,
-		CreateAt: task.CreatedAt.Format("2006-01-02 15:04:05"),
+		CreateAt: task.CreatedAt.Format("2006/01/02"),
 	}
 }

@@ -14,6 +14,6 @@ func BuildStoryResp(story *dao.Story) *StoryResp {
 		ID:        story.ID,
 		Title:     story.Title,
 		Content:   story.Content,
-		CreatedAt: story.CreatedAt.Format("2006-01-02 15:04:05"),
+		CreatedAt: story.CreatedAt.Format("2006/01/02"),
 	}
 }
