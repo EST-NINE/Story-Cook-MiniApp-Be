@@ -27,6 +27,13 @@ func (a *AdminGroup) RegisterRoutes(group *gin.RouterGroup) {
 		admin.POST("task/list", controller.ListTaskHandler)
 		admin.DELETE("task/:id", controller.DeleteTaskHandler)
 		admin.PUT("task", controller.UpdateTaskHandler)
+
+		// 食材
+		admin.POST("dish/list", controller.ListDishHandler)
+		admin.POST("dish/save", controller.CreateDishHandler)
+		admin.DELETE("dish/:id", controller.DeleteDishHandler)
+		admin.PUT("dish", controller.UpdateDishHandler)
+		admin.GET("dish/:id", controller.GetDishHandler)
 	}
 
 }
