@@ -49,6 +49,22 @@ func ExtendStoryHandler(ctx *gin.Context) {
 	}
 }
 
+func EndStoryHandler(ctx *gin.Context) {
+	var req dto.ExtendStoryDto
+	if err := ctx.ShouldBind(&req); err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
+		return
+	}
+
+	charaSetting := tongyi.EndStoryChara
+	prompt := fmt.Sprintf("标题：%s 故事背景：%s 关键词：%s", req.Title, req.Background, req.Keywords)
+	if err := ForWardSSE(ctx, prompt, charaSetting); err != nil {
+		util.LogrusObj.Infoln(err)
+		return
+	}
+}
+
 func AssessStoryHandler(ctx *gin.Context) {
 	var req dto.AssessStoryDto
 	if err := ctx.ShouldBind(&req); err != nil {
