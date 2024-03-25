@@ -16,7 +16,7 @@ type UserTask struct {
 	ID      uint   `json:"id"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
-	Status  string `json:"status"`
+	Status  int    `json:"status"`
 }
 
 type TaskDao struct {
@@ -66,6 +66,7 @@ func (dao *TaskDao) ListUserTask(userId uint, page int, limit int) (tasks []*Use
 		Order("task.created_at DESC").
 		Offset((page - 1) * limit).
 		Limit(limit).
+		Count(&total).
 		Scan(&tasks).Error
 	return tasks, total, err
 }
