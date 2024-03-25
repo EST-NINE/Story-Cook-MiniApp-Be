@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Order struct {
+type Orders struct {
 	gorm.Model
 	UserId  uint   `gorm:"not null"`
 	TaskId  uint   `gorm:"not null"`
@@ -14,7 +14,7 @@ type Order struct {
 	Comment string `gorm:"type:longtext"`
 	Score   int    `gorm:"default:0"`
 	Money   int    `gorm:"default:0"`
-	Status  int    `gorm:"default:0"` // 0:未完成 1:完成
+	Status  int    `gorm:"default:0"` // 0:未完成 1:进行中 2:已完成
 }
 
 type OrderDao struct {
@@ -28,25 +28,25 @@ func NewOrderDao(c context.Context) *OrderDao {
 	return &OrderDao{NewDBClient(c)}
 }
 
-func (dao *OrderDao) CreateOrder(order *Order) error {
-	return dao.DB.Model(&Order{}).Create(&order).Error
+func (dao *OrderDao) CreateOrder(order *Orders) error {
+	return dao.DB.Model(&Orders{}).Create(&order).Error
 }
 
-func (dao *OrderDao) FindOrderById(id uint) (order *Order, err error) {
-	err = dao.DB.Model(&Order{}).Where("id = ?", id).First(&order).Error
+func (dao *OrderDao) FindOrderById(id uint) (order *Orders, err error) {
+	err = dao.DB.Model(&Orders{}).Where("id = ?", id).First(&order).Error
 	return order, err
 }
 
 func (dao *OrderDao) DeleteOrder(id uint) error {
-	return dao.DB.Model(&Order{}).Where("id = ?", id).Delete(&Order{}).Error
+	return dao.DB.Model(&Orders{}).Where("id = ?", id).Delete(&Orders{}).Error
 }
 
-func (dao *OrderDao) UpdateOrder(id uint, order *Order) error {
-	return dao.DB.Model(&Order{}).Where("id = ?", id).Updates(order).Error
+func (dao *OrderDao) UpdateOrder(id uint, order *Orders) error {
+	return dao.DB.Model(&Orders{}).Where("id = ?", id).Updates(order).Error
 }
 
-func (dao *OrderDao) ListOrder(page, limit int, userId uint) (orders []*Order, total int64, err error) {
-	err = dao.DB.Model(&Order{}).Where("user_id = ?", userId).
+func (dao *OrderDao) ListOrder(page, limit int, userId uint) (orders []*Orders, total int64, err error) {
+	err = dao.DB.Model(&Orders{}).Where("user_id = ?", userId).
 		Count(&total).
 		Order("created_at DESC").
 		Limit(limit).Offset((page - 1) * limit).

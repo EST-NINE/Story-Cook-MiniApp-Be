@@ -58,7 +58,7 @@ func ListTaskHandler(ctx *gin.Context) {
 	}
 
 	taskSrv := service.TaskSrv{}
-	resp, err := taskSrv.ListTask(ctx, &req)
+	resp, err := taskSrv.ListUserTask(ctx, &req)
 	if err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusInternalServerError, resp)
@@ -106,7 +106,7 @@ func UpdateTaskHandler(ctx *gin.Context) {
 
 func GetDailyTaskHandler(ctx *gin.Context) {
 	taskSrv := service.TaskSrv{}
-	resp, err := taskSrv.GetDailyTask(ctx)
+	resp, err := taskSrv.GetDailyUserTask(ctx)
 	if err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusInternalServerError, resp)

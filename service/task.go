@@ -6,6 +6,7 @@ import (
 	"github.com/ncuhome/story-cook/model/dto"
 	"github.com/ncuhome/story-cook/model/vo"
 	"github.com/ncuhome/story-cook/pkg/myErrors"
+	"github.com/ncuhome/story-cook/pkg/util"
 )
 
 type TaskSrv struct {
@@ -34,20 +35,6 @@ func (s *TaskSrv) FindTaskById(ctx *gin.Context, id uint) (resp *vo.Response, er
 	return vo.SuccessWithData(vo.BuildTaskResp(task)), nil
 }
 
-func (s *TaskSrv) ListTask(ctx *gin.Context, req *dto.ListTaskDto) (resp *vo.Response, err error) {
-	tasks, total, err := dao.NewTaskDao(ctx).ListTask(req.Page, req.Limit)
-	if err != nil {
-		return vo.Error(err, myErrors.ErrorDatabase), err
-	}
-
-	listTaskResp := make([]*vo.TaskResp, 0)
-	for _, task := range tasks {
-		listTaskResp = append(listTaskResp, vo.BuildTaskResp(task))
-	}
-
-	return vo.List(listTaskResp, total), nil
-}
-
 func (s *TaskSrv) DeleteTask(ctx *gin.Context, id uint) (resp *vo.Response, err error) {
 	err = dao.NewTaskDao(ctx).DeleteTask(id)
 	if err != nil {
@@ -72,11 +59,26 @@ func (s *TaskSrv) UpdateTask(ctx *gin.Context, req *dto.TaskDto) (resp *vo.Respo
 	return vo.Success(), nil
 }
 
-func (s *TaskSrv) GetDailyTask(ctx *gin.Context) (resp *vo.Response, err error) {
-	task, err := dao.NewTaskDao(ctx).GetDailyTask()
+func (s *TaskSrv) GetDailyUserTask(ctx *gin.Context) (resp *vo.Response, err error) {
+	claims, _ := ctx.Get("claims")
+	userInfo := claims.(*util.Claims)
+
+	task, err := dao.NewTaskDao(ctx).GetDailyTask(userInfo.Id)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorNotExistTask), err
 	}
 
-	return vo.SuccessWithData(vo.BuildTaskResp(task)), nil
+	return vo.SuccessWithData(task), nil
+}
+
+func (s *TaskSrv) ListUserTask(ctx *gin.Context, req *dto.ListTaskDto) (resp *vo.Response, err error) {
+	claims, _ := ctx.Get("claims")
+	userInfo := claims.(*util.Claims)
+
+	tasks, total, err := dao.NewTaskDao(ctx).ListUserTask(userInfo.Id, req.Page, req.Limit)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+
+	return vo.List(tasks, total), nil
 }

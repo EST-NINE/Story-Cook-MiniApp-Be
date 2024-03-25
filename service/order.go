@@ -16,10 +16,11 @@ func (s *OrderSrv) CreateOrder(ctx *gin.Context, req *dto.OrderDto) (resp *vo.Re
 	claims, _ := ctx.Get("claims")
 	userInfo := claims.(*util.Claims)
 
-	order := dao.Order{
+	order := dao.Orders{
 		UserId:  userInfo.Id,
 		TaskId:  req.TaskId,
 		StoryId: req.StoryId,
+		Status:  1, // 进行中
 	}
 
 	err = dao.NewOrderDao(ctx).CreateOrder(&order)
@@ -51,7 +52,7 @@ func (s *OrderSrv) DeleteOrder(ctx *gin.Context, id uint) (resp *vo.Response, er
 func (s *OrderSrv) UpdateOrder(ctx *gin.Context, req *dto.OrderDto) (resp *vo.Response, err error) {
 	orderDao := dao.NewOrderDao(ctx)
 
-	order := &dao.Order{
+	order := &dao.Orders{
 		Comment: req.Comment,
 		Score:   req.Score,
 		Money:   req.Money,

@@ -51,7 +51,7 @@ func InitMysql() {
 
 	// 自动迁移
 	err = ormDB.Set("gorm:table_options", "charset=utf8mb4").
-		AutoMigrate(&User{}, &Admin{}, &Story{}, &Task{}, &Order{}, &Dish{})
+		AutoMigrate(&User{}, &Admin{}, &Story{}, &Task{}, &Orders{}, &Dish{})
 	if err != nil {
 		return
 	}
