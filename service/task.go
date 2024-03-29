@@ -59,6 +59,20 @@ func (s *TaskSrv) UpdateTask(ctx *gin.Context, req *dto.TaskDto) (resp *vo.Respo
 	return vo.Success(), nil
 }
 
+func (s *TaskSrv) ListTask(ctx *gin.Context, req *dto.ListTaskDto) (resp *vo.Response, err error) {
+	tasks, total, err := dao.NewTaskDao(ctx).ListTask(req.Page, req.Limit)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+
+	listTaskResp := make([]*vo.TaskResp, 0)
+	for _, task := range tasks {
+		listTaskResp = append(listTaskResp, vo.BuildTaskResp(task))
+	}
+
+	return vo.List(listTaskResp, total), nil
+}
+
 func (s *TaskSrv) GetDailyUserTask(ctx *gin.Context) (resp *vo.Response, err error) {
 	claims, _ := ctx.Get("claims")
 	userInfo := claims.(*util.Claims)

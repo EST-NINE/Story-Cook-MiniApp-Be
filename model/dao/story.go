@@ -11,6 +11,7 @@ type Story struct {
 	UserId  uint   `gorm:"not null"`
 	Title   string `gorm:"not null"`
 	Content string `gorm:"type:longtext"`
+	Count   uint   `gorm:"default:0"`
 }
 
 type StoryDao struct {

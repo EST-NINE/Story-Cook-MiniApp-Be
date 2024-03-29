@@ -47,6 +47,15 @@ func (dao *TaskDao) UpdateTask(id uint, task *Task) error {
 	return dao.DB.Model(&Task{}).Where("id = ?", id).Updates(task).Error
 }
 
+func (dao *TaskDao) ListTask(page int, limit int) (tasks []*Task, total int64, err error) {
+	err = dao.DB.Model(&Task{}).
+		Offset((page - 1) * limit).
+		Limit(limit).
+		Count(&total).
+		Find(&tasks).Error
+	return tasks, total, err
+}
+
 func (dao *TaskDao) GetDailyTask(userId uint) (task *UserTask, err error) {
 	err = dao.DB.Table("task").
 		Select("task.id, task.title, task.content, IFNULL(orders.status, 0) as status").
