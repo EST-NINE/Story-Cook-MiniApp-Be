@@ -10,8 +10,3 @@ type OrderDto struct {
 	Money   int    `json:"money" example:"100"`
 	Status  int    `json:"status" example:"1"`
 }
-
-type ListOrderDto struct {
-	Page  int `json:"page" example:"1"`
-	Limit int `json:"limit" example:"10"`
-}

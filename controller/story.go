@@ -2,9 +2,10 @@ package controller
 
 import (
 	"fmt"
-	"github.com/ncuhome/story-cook/pkg/tongyi"
 	"net/http"
 	"strconv"
+
+	"github.com/ncuhome/story-cook/pkg/tongyi"
 
 	"github.com/gin-gonic/gin"
 
@@ -101,7 +102,7 @@ func GetStoryHandler(ctx *gin.Context) {
 }
 
 func ListStoryHandler(ctx *gin.Context) {
-	var req dto.ListStoryDto
+	var req dto.ListDto
 	if err := ctx.ShouldBind(&req); err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))

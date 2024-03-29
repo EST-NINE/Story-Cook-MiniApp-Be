@@ -41,7 +41,7 @@ func (s *StorySrv) FindStoryById(ctx *gin.Context, id uint) (resp *vo.Response, 
 }
 
 // ListStory 得到对应用户的故事
-func (s *StorySrv) ListStory(ctx *gin.Context, req *dto.ListStoryDto) (resp *vo.Response, err error) {
+func (s *StorySrv) ListStory(ctx *gin.Context, req *dto.ListDto) (resp *vo.Response, err error) {
 	claims, _ := ctx.Get("claims")
 	userInfo := claims.(*util.Claims)
 

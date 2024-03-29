@@ -67,7 +67,7 @@ func (s *OrderSrv) UpdateOrder(ctx *gin.Context, req *dto.OrderDto) (resp *vo.Re
 	return vo.Success(), nil
 }
 
-func (s *OrderSrv) ListOrder(ctx *gin.Context, req *dto.ListOrderDto) (resp *vo.Response, err error) {
+func (s *OrderSrv) ListOrder(ctx *gin.Context, req *dto.ListDto) (resp *vo.Response, err error) {
 	claims, _ := ctx.Get("claims")
 	userInfo := claims.(*util.Claims)
 

@@ -50,7 +50,7 @@ func GetTaskHandler(ctx *gin.Context) {
 }
 
 func ListUserTaskHandler(ctx *gin.Context) {
-	var req dto.ListTaskDto
+	var req dto.ListDto
 	if err := ctx.ShouldBind(&req); err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
@@ -68,7 +68,7 @@ func ListUserTaskHandler(ctx *gin.Context) {
 }
 
 func ListTaskHandler(ctx *gin.Context) {
-	var req dto.ListTaskDto
+	var req dto.ListDto
 	if err := ctx.ShouldBind(&req); err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))

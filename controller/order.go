@@ -87,7 +87,7 @@ func UpdateOrderHandler(ctx *gin.Context) {
 }
 
 func ListOrderHandler(ctx *gin.Context) {
-	var req dto.ListOrderDto
+	var req dto.ListDto
 	if err := ctx.ShouldBind(&req); err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
