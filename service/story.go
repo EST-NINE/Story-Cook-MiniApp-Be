@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/gin-gonic/gin"
 	"github.com/ncuhome/story-cook/model/dao"
 	"github.com/ncuhome/story-cook/model/dto"
@@ -21,6 +23,7 @@ func (s *StorySrv) CreateStory(ctx *gin.Context, req *dto.StoryDto) (resp *vo.Re
 		UserId:  userInfo.Id,
 		Title:   req.Title,
 		Content: req.Content,
+		Count:   0,
 	}
 
 	err = dao.NewStoryDao(ctx).CreateStory(&story)
@@ -77,6 +80,37 @@ func (s *StorySrv) UpdateStory(ctx *gin.Context, req *dto.StoryDto) (resp *vo.Re
 	}
 
 	err = storyDao.UpdateStory(req.ID, story)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+
+	return vo.Success(), nil
+}
+
+// 判断故事次数是否超过限制
+func (s *StorySrv) checkStoryCount(ctx *gin.Context, storyId uint) (resp *vo.Response, err error) {
+	story, err := dao.NewStoryDao(ctx).FindStoryById(storyId)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorNotExistStory), err
+	}
+
+	if story.Count >= 3 {
+		err = errors.New("故事次数已用完")
+		return vo.Error(err), err
+	}
+
+	return vo.Success(), nil
+}
+
+// 增加故事次数
+func (s *StorySrv) addStoryCount(ctx *gin.Context, storyId uint) (resp *vo.Response, err error) {
+	story, err := dao.NewStoryDao(ctx).FindStoryById(storyId)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorNotExistStory), err
+	}
+
+	story.Count += 1
+	err = dao.NewStoryDao(ctx).UpdateStory(storyId, story)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
