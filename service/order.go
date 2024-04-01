@@ -16,10 +16,25 @@ func (s *OrderSrv) CreateOrder(ctx *gin.Context, req *dto.OrderDto) (resp *vo.Re
 	claims, _ := ctx.Get("claims")
 	userInfo := claims.(*util.Claims)
 
+	task, err := dao.NewTaskDao(ctx).FindTaskById(req.TaskId)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+
+	story := dao.Story{
+		Title:   task.Title,
+		Content: task.Content,
+	}
+
+	err = dao.NewStoryDao(ctx).CreateStory(&story)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+
 	order := dao.Orders{
 		UserId:  userInfo.Id,
 		TaskId:  req.TaskId,
-		StoryId: req.StoryId,
+		StoryId: story.ID,
 		Status:  1, // 进行中
 	}
 
@@ -28,7 +43,7 @@ func (s *OrderSrv) CreateOrder(ctx *gin.Context, req *dto.OrderDto) (resp *vo.Re
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
-	return vo.SuccessWithData(order), nil
+	return vo.SuccessWithData(vo.BuildOrderResp(&order)), nil
 }
 
 func (s *OrderSrv) FindOrderById(ctx *gin.Context, id uint) (resp *vo.Response, err error) {
@@ -37,7 +52,7 @@ func (s *OrderSrv) FindOrderById(ctx *gin.Context, id uint) (resp *vo.Response, 
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
-	return vo.SuccessWithData(order), nil
+	return vo.SuccessWithData(vo.BuildOrderResp(order)), nil
 }
 
 func (s *OrderSrv) DeleteOrder(ctx *gin.Context, id uint) (resp *vo.Response, err error) {
@@ -76,5 +91,10 @@ func (s *OrderSrv) ListOrder(ctx *gin.Context, req *dto.ListDto) (resp *vo.Respo
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
-	return vo.List(orders, total), nil
+	listOrderResp := make([]*vo.OrderResp, 0)
+	for _, order := range orders {
+		listOrderResp = append(listOrderResp, vo.BuildOrderResp(order))
+	}
+
+	return vo.List(listOrderResp, total), nil
 }
