@@ -22,6 +22,7 @@ func (s *OrderSrv) CreateOrder(ctx *gin.Context, req *dto.OrderDto) (resp *vo.Re
 	}
 
 	story := dao.Story{
+		UserId:  userInfo.Id,
 		Title:   task.Title,
 		Content: task.Content,
 	}
