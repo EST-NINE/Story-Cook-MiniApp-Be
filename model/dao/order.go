@@ -7,7 +7,7 @@ import (
 )
 
 type Orders struct {
-	gorm.Model
+	ID      uint   `gorm:"primaryKey"`
 	UserId  uint   `gorm:"not null"`
 	TaskId  uint   `gorm:"not null"`
 	StoryId uint   `gorm:"not null"`
