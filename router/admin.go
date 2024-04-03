@@ -34,6 +34,10 @@ func (a *AdminGroup) RegisterRoutes(group *gin.RouterGroup) {
 		admin.DELETE("dish/:id", controller.DeleteDishHandler)
 		admin.PUT("dish", controller.UpdateDishHandler)
 		admin.GET("dish/:id", controller.GetDishHandler)
+
+		// 用户
+		admin.POST("user/list", controller.ListUserHandler)
+		admin.DELETE("user/:id", controller.DeleteUserHandler)
 	}
 
 }

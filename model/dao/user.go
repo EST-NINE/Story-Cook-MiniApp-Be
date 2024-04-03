@@ -46,3 +46,25 @@ func (dao *UserDao) UpdateUserById(id uint, user *User) error {
 
 	return dao.DB.Model(&User{}).Where("id = ?", id).Updates(updateFields).Error
 }
+
+func (dao *UserDao) ListUserByID(page int, limit int) (users []*User, total int64, err error) {
+	err = dao.DB.Model(&User{}).
+		Count(&total).
+		Order("id DESC").
+		Limit(limit).Offset((page - 1) * limit).
+		Find(&users).Error
+	return users, total, err
+}
+
+func (dao *UserDao) ListUserByMoney(page int, limit int) (users []*User, total int64, err error) {
+	err = dao.DB.Model(&User{}).
+		Count(&total).
+		Order("money DESC").
+		Limit(limit).Offset((page - 1) * limit).
+		Find(&users).Error
+	return users, total, err
+}
+
+func (dao *UserDao) DeleteUser(id uint) error {
+	return dao.DB.Model(&User{}).Where("id = ?", id).Delete(&User{}).Error
+}

@@ -60,7 +60,7 @@ func (dao *TaskDao) ListTask(page int, limit int) (tasks []*Task, total int64, e
 }
 
 func (dao *TaskDao) GetDailyTask(userId uint) (task *UserTask, err error) {
-	err = dao.DB.Model("task").
+	err = dao.DB.Table("task").
 		Select("task.id, task.title, task.content, IFNULL(orders.status, 0) as status, IFNULL(orders.id, 0) as order_id, IFNULL(orders.story_id,0) as story_id").
 		Joins("LEFT JOIN orders ON task.id = orders.task_id AND orders.user_id = ?", userId).
 		Where("task.deleted_at IS NULL").

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/ncuhome/story-cook/model/dto"
 	"github.com/ncuhome/story-cook/model/vo"
@@ -51,6 +52,43 @@ func UpdateUserInfoHandler(ctx *gin.Context) {
 
 	userSrv := service.UserSrv{}
 	resp, err := userSrv.UpdateInfo(ctx, &req)
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+}
+
+func ListUserHandler(ctx *gin.Context) {
+	var req dto.ListUserDto
+	if err := ctx.ShouldBind(&req); err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
+		return
+	}
+
+	userSrv := service.UserSrv{}
+	resp, err := userSrv.ListUser(ctx, &req)
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+}
+
+func DeleteUserHandler(ctx *gin.Context) {
+	idStr := ctx.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
+		return
+	}
+
+	userSrv := service.UserSrv{}
+	resp, err := userSrv.DeleteUser(ctx, uint(id))
 	if err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusInternalServerError, resp)

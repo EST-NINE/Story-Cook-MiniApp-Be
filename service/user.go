@@ -92,3 +92,38 @@ func (s *UserSrv) UpdateInfo(ctx *gin.Context, req *dto.UserDto) (resp *vo.Respo
 	userResp := vo.BuildUserResp(user)
 	return vo.SuccessWithData(userResp), nil
 }
+
+func (s *UserSrv) ListUser(ctx *gin.Context, req *dto.ListUserDto) (resp *vo.Response, err error) {
+	userDao := dao.NewUserDao(ctx)
+	var users []*dao.User
+	var total int64
+
+	switch req.Order {
+	case 0:
+		users, total, err = userDao.ListUserByID(req.Page, req.Limit)
+		if err != nil {
+			return vo.Error(err, myErrors.ErrorDatabase), err
+		}
+	case 1:
+		users, total, err = userDao.ListUserByMoney(req.Page, req.Limit)
+		if err != nil {
+			return vo.Error(err, myErrors.ErrorDatabase), err
+		}
+	}
+
+	listUserResp := make([]*vo.UserResp, 0)
+	for _, task := range users {
+		listUserResp = append(listUserResp, vo.BuildUserResp(task))
+	}
+
+	return vo.List(listUserResp, total), nil
+}
+
+func (s *UserSrv) DeleteUser(ctx *gin.Context, id uint) (resp *vo.Response, err error) {
+	err = dao.NewUserDao(ctx).DeleteUser(id)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+
+	return vo.Success(), nil
+}
