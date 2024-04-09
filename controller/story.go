@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/ncuhome/story-cook/model/dao"
+
 	"github.com/ncuhome/story-cook/pkg/tongyi"
 
 	"github.com/gin-gonic/gin"
@@ -43,7 +45,14 @@ func ExtendStoryHandler(ctx *gin.Context) {
 	}
 
 	charaSetting := tongyi.ExtendStoryChara
-	prompt := fmt.Sprintf("标题：%s 故事背景：%s 关键词：%s", req.Title, req.Background, req.Keywords)
+	story, err := dao.NewStoryDao(ctx).FindStoryById(req.StoryId)
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusInternalServerError, vo.Error(err, myErrors.ErrorDatabase))
+		return
+	}
+
+	prompt := fmt.Sprintf("标题：%s 故事背景：%s 关键词：%s", story.Title, story.Content, req.Keywords)
 	if err := ForWardSSE(ctx, prompt, charaSetting); err != nil {
 		util.LogrusObj.Infoln(err)
 		return
@@ -58,8 +67,15 @@ func EndStoryHandler(ctx *gin.Context) {
 		return
 	}
 
+	story, err := dao.NewStoryDao(ctx).FindStoryById(req.StoryId)
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusInternalServerError, vo.Error(err, myErrors.ErrorDatabase))
+		return
+	}
+
 	charaSetting := tongyi.EndStoryChara
-	prompt := fmt.Sprintf("标题：%s 故事背景：%s 关键词：%s", req.Title, req.Background, req.Keywords)
+	prompt := fmt.Sprintf("标题：%s 故事背景：%s 关键词：%s", story.Title, story.Content, req.Keywords)
 	if err := ForWardSSE(ctx, prompt, charaSetting); err != nil {
 		util.LogrusObj.Infoln(err)
 		return
