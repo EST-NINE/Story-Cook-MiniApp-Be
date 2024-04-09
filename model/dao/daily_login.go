@@ -29,10 +29,11 @@ func (dao *DailyLoginDao) CreateDailyLogin(dailyLogin *DailyLogin) error {
 }
 
 func (dao *DailyLoginDao) FindDailyLoginById(userId uint) (dailyLogin *DailyLogin, err error) {
-	today := time.Now().Truncate(24 * time.Hour)
-	tomorrow := today.Add(24 * time.Hour)
+	today := time.Now()
+	midnight := time.Date(today.Year(), today.Month(), today.Day(), 0, 0, 0, 0, today.Location())
+	tomorrow := midnight.Add(24 * time.Hour)
 
-	err = dao.DB.Model(&DailyLogin{}).Where("user_id = ? AND Date >= ? AND Date < ?", userId, today, tomorrow).First(&dailyLogin).Error
+	err = dao.DB.Model(&DailyLogin{}).Where("user_id = ? AND Date >= ? AND Date < ?", userId, midnight, tomorrow).First(&dailyLogin).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		_ = dao.DB.Model(&DailyLogin{}).Where("user_id = ?", userId).Update("Date", time.Now()).Error
 	}
