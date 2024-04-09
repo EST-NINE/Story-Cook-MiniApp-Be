@@ -9,7 +9,7 @@ import (
 type User struct {
 	gorm.Model
 	UserName string
-	Openid   string `gorm:"unique"`
+	Openid   string `gorm:"primaryKey"`
 	Money    int    `gorm:"default:0"`
 }
 
@@ -45,6 +45,10 @@ func (dao *UserDao) UpdateUserById(id uint, user *User) error {
 	}
 
 	return dao.DB.Model(&User{}).Where("id = ?", id).Updates(updateFields).Error
+}
+
+func (dao *UserDao) DailyLoginReward(user *User) error {
+	return dao.DB.Model(&User{}).Where("id = ?", user.ID).Update("money", gorm.Expr("money + ?", 20)).Error
 }
 
 func (dao *UserDao) ListUserByID(page int, limit int) (users []*User, total int64, err error) {
