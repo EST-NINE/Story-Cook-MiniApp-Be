@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
 
@@ -31,16 +32,36 @@ func (s *UserSrv) Login(ctx *gin.Context, req *dto.UserDto) (resp *vo.Response, 
 	}
 
 	userDao := dao.NewUserDao(ctx)
+	loginDao := dao.NewDailyLoginDao(ctx)
+
+	// 查询数据库，判断用户是否存在，没找到则创建一个用户
 	user, err := userDao.FindUserByOpenid(openid)
-	// 未找到，则创建一个用户
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		user = &dao.User{
 			UserName: fmt.Sprint("用户" + uuid.New().String()[:6]),
 			Openid:   openid,
 		}
-
 		if err = userDao.CreateUser(user); err != nil {
 			return vo.Error(err, myErrors.ErrorCreateUser), err
+		}
+
+		if err = loginDao.CreateDailyLogin(&dao.DailyLogin{
+			UserId: user.ID,
+			Date:   time.Now(),
+		}); err != nil {
+			return vo.Error(err, myErrors.ErrorDatabase), err
+		}
+	}
+
+	// 实现每日签到的奖励
+	if _, err = loginDao.FindDailyLoginById(user.ID); errors.Is(err, gorm.ErrRecordNotFound) {
+		if err = userDao.DailyLoginReward(user); err != nil {
+			return vo.Error(err, myErrors.ErrorDatabase), err
+		}
+
+		user, err = userDao.FindUserByOpenid(openid)
+		if err != nil {
+			return vo.Error(err, myErrors.ErrorDatabase), err
 		}
 	}
 
