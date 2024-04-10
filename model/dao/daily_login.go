@@ -40,3 +40,7 @@ func (dao *DailyLoginDao) FindDailyLoginById(userId uint) (dailyLogin *DailyLogi
 
 	return dailyLogin, err
 }
+
+func (dao *DailyLoginDao) DeleteDailyLogin(userId uint) error {
+	return dao.DB.Model(&DailyLogin{}).Where("user_id = ?", userId).Delete(&DailyLogin{}).Error
+}
