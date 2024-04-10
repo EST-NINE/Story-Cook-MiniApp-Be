@@ -57,7 +57,20 @@ func (s *OrderSrv) FindOrderById(ctx *gin.Context, id uint) (resp *vo.Response, 
 }
 
 func (s *OrderSrv) DeleteOrder(ctx *gin.Context, id uint) (resp *vo.Response, err error) {
-	err = dao.NewOrderDao(ctx).DeleteOrder(id)
+	orderDao := dao.NewOrderDao(ctx)
+
+	order, err := orderDao.FindOrderById(id)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+
+	// 删除关联的故事
+	err = dao.NewStoryDao(ctx).DeleteStory(order.StoryId)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+
+	err = orderDao.DeleteOrder(id)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
