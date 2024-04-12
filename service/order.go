@@ -16,6 +16,26 @@ func (s *OrderSrv) CreateOrder(ctx *gin.Context, req *dto.OrderDto) (resp *vo.Re
 	claims, _ := ctx.Get("claims")
 	userInfo := claims.(*util.Claims)
 
+	orderDao := dao.NewOrderDao(ctx)
+
+	// 在开启新任务之后删除其他进行中的任务
+	orders, err := orderDao.FindOngoingOrders(userInfo.Id)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+	for _, order := range orders {
+		// 删除关联的故事
+		err = dao.NewStoryDao(ctx).DeleteStory(order.StoryId)
+		if err != nil {
+			return vo.Error(err, myErrors.ErrorDatabase), err
+		}
+
+		err = orderDao.DeleteOrder(order.ID)
+		if err != nil {
+			return vo.Error(err, myErrors.ErrorDatabase), err
+		}
+	}
+
 	task, err := dao.NewTaskDao(ctx).FindTaskById(req.TaskId)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorDatabase), err
@@ -39,7 +59,7 @@ func (s *OrderSrv) CreateOrder(ctx *gin.Context, req *dto.OrderDto) (resp *vo.Re
 		Status:  1, // 进行中
 	}
 
-	err = dao.NewOrderDao(ctx).CreateOrder(&order)
+	err = orderDao.CreateOrder(&order)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}

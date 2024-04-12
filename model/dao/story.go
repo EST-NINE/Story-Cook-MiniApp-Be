@@ -2,16 +2,19 @@ package dao
 
 import (
 	"context"
+	"time"
 
 	"gorm.io/gorm"
 )
 
 type Story struct {
-	gorm.Model
-	UserId  uint   `gorm:"not null"`
-	Title   string `gorm:"not null"`
-	Content string `gorm:"type:longtext"`
-	Count   uint   `gorm:"default:0"`
+	ID        uint `gorm:"primarykey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	UserId    uint   `gorm:"not null"`
+	Title     string `gorm:"not null"`
+	Content   string `gorm:"type:longtext"`
+	Count     uint   `gorm:"default:0"`
 }
 
 type StoryDao struct {

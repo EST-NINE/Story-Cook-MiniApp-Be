@@ -45,10 +45,15 @@ func (dao *OrderDao) UpdateOrder(id uint, order *Orders) error {
 	return dao.DB.Model(&Orders{}).Where("id = ?", id).Updates(order).Error
 }
 
+func (dao *OrderDao) FindOngoingOrders(userId uint) (orders []*Orders, err error) {
+	err = dao.DB.Model(&Orders{}).Where("user_id = ? AND status = 1", userId).Find(&orders).Error
+	return orders, err
+}
+
 func (dao *OrderDao) ListOrder(page, limit int, userId uint) (orders []*Orders, total int64, err error) {
 	err = dao.DB.Model(&Orders{}).Where("user_id = ?", userId).
 		Count(&total).
-		Order("created_at DESC").
+		Order("id DESC").
 		Limit(limit).Offset((page - 1) * limit).
 		Find(&orders).Error
 	return orders, total, err

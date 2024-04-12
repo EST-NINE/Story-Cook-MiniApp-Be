@@ -132,3 +132,14 @@ func GetDailyTaskHandler(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, resp)
 }
+
+func GetOngoingHandler(ctx *gin.Context) {
+	taskSrv := service.TaskSrv{}
+	resp, err := taskSrv.GetOngoingUserTask(ctx)
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+}
