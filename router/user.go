@@ -25,7 +25,7 @@ func (u *UserGroup) RegisterRoutes(group *gin.RouterGroup) {
 		user.POST("story/save", controller.CreateStoryHandler)
 		user.POST("story/extend", controller.ExtendStoryHandler)
 		user.POST("story/end", controller.EndStoryHandler)
-		user.POST("story/assess", controller.AssessStoryHandler)
+		user.POST("story/assess/:id", controller.AssessStoryHandler)
 		user.POST("story/list", controller.ListStoryHandler)
 		user.DELETE("story/:id", controller.DeleteStoryHandler)
 		user.PUT("story", controller.UpdateStoryHandler)

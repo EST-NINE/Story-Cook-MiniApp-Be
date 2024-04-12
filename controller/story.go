@@ -83,15 +83,23 @@ func EndStoryHandler(ctx *gin.Context) {
 }
 
 func AssessStoryHandler(ctx *gin.Context) {
-	var req dto.AssessStoryDto
-	if err := ctx.ShouldBind(&req); err != nil {
+	idStr := ctx.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
 		return
 	}
 
+	story, err := dao.NewStoryDao(ctx).FindStoryById(uint(id))
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusInternalServerError, vo.Error(err, myErrors.ErrorDatabase))
+		return
+	}
+
 	charaSetting := tongyi.AssessStoryChara
-	prompt := fmt.Sprintf("故事标题：%s 故事内容：%s", req.Title, req.Content)
+	prompt := fmt.Sprintf("故事标题：%s 故事内容：%s", story.Title, story.Content)
 	if err := ForWardSSE(ctx, prompt, charaSetting); err != nil {
 		util.LogrusObj.Infoln(err)
 		return
