@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/gin-gonic/gin"
 	"github.com/ncuhome/story-cook/model/dao"
 	"github.com/ncuhome/story-cook/model/dto"
@@ -90,7 +92,8 @@ func (s *TaskSrv) GetOngoingUserTask(ctx *gin.Context) (resp *vo.Response, err e
 	userInfo := claims.(*util.Claims)
 
 	task, err := dao.NewTaskDao(ctx).GetOngoingUserTask(userInfo.Id)
-	if err != nil {
+	if err != nil || task == nil {
+		err := errors.New("未找到进行中的任务")
 		return vo.Error(err, myErrors.ErrorNotExistTask), err
 	}
 
