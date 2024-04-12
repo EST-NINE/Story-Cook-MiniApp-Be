@@ -85,6 +85,18 @@ func (s *TaskSrv) GetDailyUserTask(ctx *gin.Context) (resp *vo.Response, err err
 	return vo.SuccessWithData(task), nil
 }
 
+func (s *TaskSrv) GetOngoingUserTask(ctx *gin.Context) (resp *vo.Response, err error) {
+	claims, _ := ctx.Get("claims")
+	userInfo := claims.(*util.Claims)
+
+	task, err := dao.NewTaskDao(ctx).GetOngoingUserTask(userInfo.Id)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorNotExistTask), err
+	}
+
+	return vo.SuccessWithData(task), nil
+}
+
 func (s *TaskSrv) ListUserTask(ctx *gin.Context, req *dto.ListDto) (resp *vo.Response, err error) {
 	claims, _ := ctx.Get("claims")
 	userInfo := claims.(*util.Claims)

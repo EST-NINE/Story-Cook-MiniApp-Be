@@ -32,6 +32,7 @@ func (u *UserGroup) RegisterRoutes(group *gin.RouterGroup) {
 
 		// 每日任务
 		user.GET("task", controller.GetDailyTaskHandler)
+		user.GET("task/ongoing", controller.GetOngoingHandler)
 		user.POST("task/list", controller.ListUserTaskHandler)
 
 		// 订单
