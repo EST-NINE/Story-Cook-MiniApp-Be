@@ -19,4 +19,9 @@ var (
 
 	WxAppId     string = os.Getenv("WX_APP_ID")
 	WxAppSecret string = os.Getenv("WX_APP_SECRET")
+
+	AliEndPoint        string = os.Getenv("Ali_EndPoint")
+	AliAccessKeyId     string = os.Getenv("Ali_AccessKeyId")
+	AliAccessKeySecret string = os.Getenv("Ali_AccessKeySecret")
+	AliBucketName      string = os.Getenv("Ali_BucketName")
 )

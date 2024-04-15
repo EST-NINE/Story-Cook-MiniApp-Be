@@ -16,6 +16,9 @@ func (a *AdminGroup) RegisterRoutes(group *gin.RouterGroup) {
 	group.POST("login", controller.AdminLoginHandler)
 	admin := group.Use(middleware.JWTAdminAuth()) // 登录保护
 	{
+		// 上传图片
+		admin.POST("upload", controller.UploadImageHandler)
+
 		// 信息
 		admin.POST("register", controller.AdminRegisterHandler)
 		admin.PUT("info", controller.UpdateAdminInfoHandler)
