@@ -1,8 +1,6 @@
 package service
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/ncuhome/story-cook/model/dao"
 	"github.com/ncuhome/story-cook/model/dto"
@@ -14,18 +12,18 @@ type DishSrv struct {
 }
 
 func (s *DishSrv) CreateDish(ctx *gin.Context, req *dto.DishDto) (resp *vo.Response, err error) {
-	dish := dao.Dish{
+	dish := &dao.Dish{
 		Name:        req.Name,
 		Description: req.Description,
 		Image:       req.Image,
 	}
 
-	err = dao.NewDishDao(ctx).CreateDish(&dish)
+	err = dao.NewDishDao(ctx).CreateDish(dish)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
-	return vo.SuccessWithData(dish), nil
+	return vo.SuccessWithData(vo.BuildDishResp(dish)), nil
 }
 
 func (s *DishSrv) FindDishById(ctx *gin.Context, id uint) (resp *vo.Response, err error) {
@@ -34,7 +32,7 @@ func (s *DishSrv) FindDishById(ctx *gin.Context, id uint) (resp *vo.Response, er
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
-	return vo.SuccessWithData(dish), nil
+	return vo.SuccessWithData(vo.BuildDishResp(dish)), nil
 }
 
 func (s *DishSrv) DeleteDish(ctx *gin.Context, id uint) (resp *vo.Response, err error) {
@@ -56,7 +54,6 @@ func (s *DishSrv) UpdateDish(ctx *gin.Context, req *dto.DishDto) (resp *vo.Respo
 	}
 
 	err = dishDao.UpdateDish(req.ID, dish)
-	fmt.Println(dish)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
@@ -70,5 +67,9 @@ func (s *DishSrv) ListDish(ctx *gin.Context) (resp *vo.Response, err error) {
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
-	return vo.List(dishes, total), nil
+	listDishResp := make([]*vo.DishResp, 0)
+	for _, dish := range dishes {
+		listDishResp = append(listDishResp, vo.BuildDishResp(dish))
+	}
+	return vo.List(listDishResp, total), nil
 }

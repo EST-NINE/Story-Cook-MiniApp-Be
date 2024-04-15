@@ -16,3 +16,9 @@ ApiKey =
 [wx]
 WxAppId =
 WxAppSecret =
+
+[AliOss]
+AliEndPoint =
+AliAccessKeyId =
+AliAccessKeySecret =
+AliBucketName =

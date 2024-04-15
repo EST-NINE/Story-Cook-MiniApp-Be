@@ -16,6 +16,7 @@ func InitDevFile() {
 	LoadMysqlData(file)
 	LoadTongYi(file)
 	LoadWx(file)
+	LoadAliOss(file)
 }
 
 func LoadServer(file *ini.File) {
@@ -39,4 +40,11 @@ func LoadTongYi(file *ini.File) {
 func LoadWx(file *ini.File) {
 	WxAppId = file.Section("wx").Key("WxAppId").String()
 	WxAppSecret = file.Section("wx").Key("WxAppSecret").String()
+}
+
+func LoadAliOss(file *ini.File) {
+	AliEndPoint = file.Section("AliOss").Key("AliEndPoint").String()
+	AliAccessKeyId = file.Section("AliOss").Key("AliAccessKeyId").String()
+	AliAccessKeySecret = file.Section("AliOss").Key("AliAccessKeySecret").String()
+	AliBucketName = file.Section("AliOss").Key("AliBucketName").String()
 }
