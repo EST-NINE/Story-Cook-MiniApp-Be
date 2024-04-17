@@ -44,7 +44,7 @@ func ExtendStoryHandler(ctx *gin.Context) {
 		return
 	}
 
-	charaSetting := tongyi.ExtendStoryChara
+	charaSetting := tongyi.ExtendStoryPrompt
 	story, err := dao.NewStoryDao(ctx).FindStoryById(req.StoryId)
 	if err != nil {
 		util.LogrusObj.Infoln(err)
@@ -74,7 +74,7 @@ func EndStoryHandler(ctx *gin.Context) {
 		return
 	}
 
-	charaSetting := tongyi.EndStoryChara
+	charaSetting := tongyi.EndStoryPrompt
 	prompt := fmt.Sprintf("标题：%s 故事背景：%s 关键词：%s", story.Title, story.Content, req.Keywords)
 	if err := ForWardSSE(ctx, prompt, charaSetting); err != nil {
 		util.LogrusObj.Infoln(err)
@@ -98,7 +98,7 @@ func AssessStoryHandler(ctx *gin.Context) {
 		return
 	}
 
-	charaSetting := tongyi.AssessStoryChara
+	charaSetting := tongyi.AssessStoryPrompt
 	prompt := fmt.Sprintf("故事标题：%s 故事内容：%s", story.Title, story.Content)
 	if err := ForWardSSE(ctx, prompt, charaSetting); err != nil {
 		util.LogrusObj.Infoln(err)
