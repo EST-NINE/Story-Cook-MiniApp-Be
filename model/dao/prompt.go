@@ -2,7 +2,10 @@ package dao
 
 import (
 	"context"
+	"errors"
 	"github.com/ncuhome/story-cook/model/dto"
+	"github.com/ncuhome/story-cook/pkg/tongyi"
+	"github.com/ncuhome/story-cook/pkg/util"
 	"gorm.io/gorm"
 )
 
@@ -59,6 +62,7 @@ func (dao *PromptDao) UpdatePrompt(req *dto.PromptDto) error {
 		if err != nil {
 			return err
 		}
+		tongyi.ExtendStoryPrompt = req.ExtendStory
 	}
 
 	if req.EndStory != "" {
@@ -71,6 +75,7 @@ func (dao *PromptDao) UpdatePrompt(req *dto.PromptDto) error {
 		if err != nil {
 			return err
 		}
+		tongyi.EndStoryPrompt = req.EndStory
 	}
 
 	if req.AssessStory != "" {
@@ -83,6 +88,35 @@ func (dao *PromptDao) UpdatePrompt(req *dto.PromptDto) error {
 		if err != nil {
 			return err
 		}
+		tongyi.AssessStoryPrompt = req.AssessStory
 	}
 	return nil
+}
+
+func InitPrompt() {
+	var data dto.PromptDto
+	var c context.Context = nil
+
+	promptDao := NewPromptDao(c)
+
+	// 判断 prompt 表是否为空, 为空则新建三条记录
+	result := promptDao.First(&Prompt{})
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		prompts := []*Prompt{
+			{Type: "extend"},
+			{Type: "end"},
+			{Type: "assess"},
+		}
+		promptDao.Create(prompts)
+	}
+
+	err := promptDao.GetPrompt(&data)
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		return
+	}
+
+	tongyi.ExtendStoryPrompt = data.ExtendStory
+	tongyi.EndStoryPrompt = data.EndStory
+	tongyi.AssessStoryPrompt = data.AssessStory
 }

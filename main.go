@@ -21,4 +21,5 @@ func init() {
 	config.InitDevFile()
 	util.InitLog()
 	dao.InitMysql()
+	dao.InitPrompt()
 }
