@@ -6,7 +6,6 @@ import (
 	"github.com/ncuhome/story-cook/model/vo"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/ncuhome/story-cook/pkg/util"
 )
 
@@ -17,9 +16,7 @@ func UploadImageHandler(ctx *gin.Context) {
 		return
 	}
 
-	// 拼接uuid的图片名称
-	imageName := uuid.New().String() + file.Filename
-	imagePath, err := util.AliOss(imageName, file)
+	imagePath, err := util.AliOss(file.Filename, file)
 	if err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusInternalServerError, vo.Error(err))
