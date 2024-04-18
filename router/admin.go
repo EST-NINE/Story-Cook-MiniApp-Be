@@ -44,6 +44,7 @@ func (a *AdminGroup) RegisterRoutes(group *gin.RouterGroup) {
 
 		// Prompt
 		admin.GET("prompt", controller.GetPromptHandler)
+		admin.GET("prompt/list", controller.FindPromptListHandler)
 		admin.PUT("prompt", controller.UpdatePromptHandler)
 	}
 }
