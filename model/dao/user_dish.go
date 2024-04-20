@@ -34,5 +34,5 @@ func (dao *UserDishDao) FindUserDish(userId, dishId uint) (userDish *UserDish, e
 }
 
 func (dao *UserDishDao) UpdateUserDish(userDish *UserDish) error {
-	return dao.DB.Model(&UserDish{}).Where("user_id = ? AND dish_id = ?", userDish.UserId, userDish.DishId).Updates(&userDish).Error
+	return dao.DB.Model(&UserDish{}).Where("user_id = ? AND dish_id = ?", userDish.UserId, userDish.DishId).Save(&userDish).Error
 }
