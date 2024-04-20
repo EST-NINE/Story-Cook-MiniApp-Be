@@ -41,5 +41,10 @@ func (u *UserGroup) RegisterRoutes(group *gin.RouterGroup) {
 		user.POST("order/save", controller.CreateOrderHandler)
 		user.DELETE("order/:id", controller.DeleteOrderHandler)
 		user.PUT("order", controller.UpdateOrderHandler)
+
+		// 抽卡
+		user.GET("shot/single", controller.ShotSingleHandler)
+		user.GET("shot/ten", controller.TenShotsHandler)
+		user.GET("shot/merge/:dishID", controller.MergePieceHandler)
 	}
 }
