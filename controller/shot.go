@@ -23,6 +23,17 @@ func ShotSingleHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
+func TenShotsHandler(ctx *gin.Context) {
+	shotSrv := service.ShotSrv{}
+	resp, err := shotSrv.TenShots(ctx)
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+}
+
 func MergePieceHandler(ctx *gin.Context) {
 	idStr := ctx.Param("dishID")
 	id, err := strconv.Atoi(idStr)

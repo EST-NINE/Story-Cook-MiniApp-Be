@@ -1,7 +1,8 @@
 package global
 
 const (
-	SingleShotMoney = 20
+	SingleShotCost = 20
+	TenShotCost    = 200
 
 	InitialDishAmount  = 1
 	InitialPieceAmount = 0
