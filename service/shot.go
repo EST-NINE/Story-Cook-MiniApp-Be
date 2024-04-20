@@ -74,3 +74,28 @@ func (s *ShotSrv) SingleShot(ctx *gin.Context) (resp *vo.Response, err error) {
 
 	return vo.SuccessWithData(userDish), nil
 }
+
+func (s *ShotSrv) MergePiece(ctx *gin.Context, dishId uint) (resp *vo.Response, err error) {
+	claims, _ := ctx.Get("claims")
+	userInfo := claims.(*util.Claims)
+
+	userDishDao := dao.NewUserDishDao(ctx)
+	userDish, err := userDishDao.FindUserDish(userInfo.Id, dishId)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+
+	if userDish.PieceAmount < global.MergePieceAmount {
+		err := errors.New("碎片数量不足")
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+
+	userDish.PieceAmount -= global.MergePieceAmount
+	userDish.DishAmount++
+	err = userDishDao.UpdateUserDish(userDish)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+
+	return vo.SuccessWithData(userDish), nil
+}

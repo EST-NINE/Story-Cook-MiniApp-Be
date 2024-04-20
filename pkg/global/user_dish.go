@@ -5,5 +5,7 @@ const (
 
 	InitialDishAmount  = 1
 	InitialPieceAmount = 0
-	AddedPieceAmount   = 20
+
+	AddedPieceAmount = 20
+	MergePieceAmount = 100
 )
