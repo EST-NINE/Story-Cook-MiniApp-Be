@@ -102,7 +102,7 @@ func (s *ShotSrv) SingleShot(ctx *gin.Context) (resp *vo.Response, err error) {
 		if err != nil {
 			return vo.Error(err, myErrors.ErrorDatabase), err
 		}
-		return vo.SuccessWithData(userDish), nil
+		return vo.SuccessWithData(vo.BuildShotResp(userDish, true)), nil
 	}
 
 	// 如果用户已经拥有过该菜品，则加碎片
@@ -112,7 +112,7 @@ func (s *ShotSrv) SingleShot(ctx *gin.Context) (resp *vo.Response, err error) {
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
-	return vo.SuccessWithData(userDish), nil
+	return vo.SuccessWithData(vo.BuildShotResp(userDish, false)), nil
 }
 
 func (s *ShotSrv) TenShots(ctx *gin.Context) (resp *vo.Response, err error) {
@@ -138,16 +138,14 @@ func (s *ShotSrv) TenShots(ctx *gin.Context) (resp *vo.Response, err error) {
 	}
 
 	// 随机生成十个菜品（可重复）
-	dishes, total, err := dao.NewDishDao(ctx).ListDish()
+	dishes, err := generateRandomDish(ctx, 10)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
-	tenUserDishes := make([]*dao.UserDish, 0)
-	selectedDishIDs := make(map[uint]bool)
+	tenUserDishes := make([]*vo.ShotResp, 0)
 	for i := 0; i < 10; i++ {
-		random := rand.Intn(int(total))
-		dish := dishes[random]
+		dish := dishes[i]
 
 		// 判断用户是否已经拥有该菜品
 		userDishDao := dao.NewUserDishDao(ctx)
@@ -166,10 +164,7 @@ func (s *ShotSrv) TenShots(ctx *gin.Context) (resp *vo.Response, err error) {
 			}
 
 			// 将该菜品添加到返回结果中
-			if !selectedDishIDs[dish.ID] {
-				tenUserDishes = append(tenUserDishes, userDish)
-			}
-			selectedDishIDs[dish.ID] = true
+			tenUserDishes = append(tenUserDishes, vo.BuildShotResp(userDish, true))
 		} else {
 			// 如果用户已经拥有过该菜品，则加碎片
 			userDish.PieceAmount += global.AddedPieceAmount
@@ -179,10 +174,7 @@ func (s *ShotSrv) TenShots(ctx *gin.Context) (resp *vo.Response, err error) {
 			}
 
 			// 将该菜品添加到返回结果中
-			if !selectedDishIDs[dish.ID] {
-				tenUserDishes = append(tenUserDishes, userDish)
-			}
-			selectedDishIDs[dish.ID] = true
+			tenUserDishes = append(tenUserDishes, vo.BuildShotResp(userDish, false))
 		}
 	}
 
