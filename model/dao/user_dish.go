@@ -47,12 +47,11 @@ func (dao *UserDishDao) UpdateUserDish(userDish *UserDish) error {
 	return dao.DB.Model(&UserDish{}).Where("user_id = ? AND dish_id = ?", userDish.UserId, userDish.DishId).Save(&userDish).Error
 }
 
-func (dao *UserDishDao) ListUserDish(userId uint) (userDishList []*UserDishResp, total int64, err error) {
+func (dao *UserDishDao) ListUserDish(userId uint) (userDishList []*UserDishResp, err error) {
 	err = dao.DB.Table("dish").
 		Select("dish.id, dish.name, dish.description, dish.image, dish.quality, ud.dish_amount, ud.piece_amount").
 		Joins("left join user_dish ud on ud.dish_id = dish.id").
 		Where("ud.user_id = ?", userId).
-		Scan(&userDishList).
-		Count(&total).Error
-	return userDishList, total, err
+		Scan(&userDishList).Error
+	return userDishList, err
 }

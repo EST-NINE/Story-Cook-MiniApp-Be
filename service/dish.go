@@ -81,6 +81,6 @@ func (s *DishSrv) ListUserDish(ctx *gin.Context) (resp *vo.Response, err error) 
 	claims, _ := ctx.Get("claims")
 	userInfo := claims.(*util.Claims)
 
-	userDishList, total, err := dao.NewUserDishDao(ctx).ListUserDish(userInfo.Id)
-	return vo.List(userDishList, total), nil
+	userDishList, err := dao.NewUserDishDao(ctx).ListUserDish(userInfo.Id)
+	return vo.List(userDishList, int64(len(userDishList))), nil
 }

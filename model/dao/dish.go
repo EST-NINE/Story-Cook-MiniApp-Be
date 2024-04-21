@@ -46,6 +46,6 @@ func (dao *DishDao) ListDish() (dishes []*Dish, total int64, err error) {
 	return dishes, total, dao.DB.Model(&Dish{}).Count(&total).Find(&dishes).Error
 }
 
-func (dao *DishDao) ListDishByQuality(quality string) (dishes []*Dish, total int64, err error) {
-	return dishes, total, dao.DB.Model(&Dish{}).Where("quality = ?", quality).Count(&total).Find(&dishes).Error
+func (dao *DishDao) ListDishByQuality(quality string) (dishes []*Dish, err error) {
+	return dishes, dao.DB.Model(&Dish{}).Where("quality = ?", quality).Find(&dishes).Error
 }

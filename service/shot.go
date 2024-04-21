@@ -23,17 +23,17 @@ func generateRandomDish(ctx *gin.Context, num int) ([]*dao.Dish, error) {
 	var selectedDishes []*dao.Dish
 
 	// 查询对应品质的菜品
-	dishesWithR, totalWithR, err := dishDao.ListDishByQuality("R")
+	dishesWithR, err := dishDao.ListDishByQuality("R")
 	if err != nil {
 		return nil, err
 	}
 
-	dishesWithSR, totalWithSR, err := dishDao.ListDishByQuality("SR")
+	dishesWithSR, err := dishDao.ListDishByQuality("SR")
 	if err != nil {
 		return nil, err
 	}
 
-	dishesWithSSR, totalWithSSR, err := dishDao.ListDishByQuality("SSR")
+	dishesWithSSR, err := dishDao.ListDishByQuality("SSR")
 	if err != nil {
 		return nil, err
 	}
@@ -45,11 +45,11 @@ func generateRandomDish(ctx *gin.Context, num int) ([]*dao.Dish, error) {
 
 		switch {
 		case randomNum < global.ProbabilityR:
-			selectedDish = dishesWithR[rand.Intn(int(totalWithR))]
+			selectedDish = dishesWithR[rand.Intn(len(dishesWithR))]
 		case randomNum < global.ProbabilityR+global.ProbabilitySR:
-			selectedDish = dishesWithSR[rand.Intn(int(totalWithSR))]
+			selectedDish = dishesWithSR[rand.Intn(len(dishesWithSR))]
 		case randomNum < global.ProbabilityR+global.ProbabilitySR+global.ProbabilitySSR:
-			selectedDish = dishesWithSSR[rand.Intn(int(totalWithSSR))]
+			selectedDish = dishesWithSSR[rand.Intn(len(dishesWithSSR))]
 		}
 
 		selectedDishes = append(selectedDishes, selectedDish)
