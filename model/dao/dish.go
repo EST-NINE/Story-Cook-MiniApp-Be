@@ -49,3 +49,19 @@ func (dao *DishDao) ListDish() (dishes []*Dish, total int64, err error) {
 func (dao *DishDao) ListDishByQuality(quality string) (dishes []*Dish, err error) {
 	return dishes, dao.DB.Model(&Dish{}).Where("quality = ?", quality).Find(&dishes).Error
 }
+
+func (dao *DishDao) ListDishesByQualities(qualities []string) (map[string][]*Dish, error) {
+	var dishes []*Dish
+	dishesMap := make(map[string][]*Dish)
+
+	err := dao.DB.Model(&Dish{}).Where("quality IN (?)", qualities).Find(&dishes).Error
+	if err != nil {
+		return nil, err
+	}
+
+	for _, dish := range dishes {
+		dishesMap[dish.Quality] = append(dishesMap[dish.Quality], dish)
+	}
+
+	return dishesMap, nil
+}

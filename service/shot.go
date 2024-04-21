@@ -20,36 +20,27 @@ type ShotSrv struct {
 // 随机生成指定数量的菜品
 func generateRandomDish(ctx *gin.Context, num int) ([]*dao.Dish, error) {
 	dishDao := dao.NewDishDao(ctx)
-	var selectedDishes []*dao.Dish
 
 	// 查询对应品质的菜品
-	dishesWithR, err := dishDao.ListDishByQuality("R")
+	qualities := []string{"R", "SR", "SSR"}
+	dishesMap, err := dishDao.ListDishesByQualities(qualities)
 	if err != nil {
 		return nil, err
 	}
 
-	dishesWithSR, err := dishDao.ListDishByQuality("SR")
-	if err != nil {
-		return nil, err
-	}
-
-	dishesWithSSR, err := dishDao.ListDishByQuality("SSR")
-	if err != nil {
-		return nil, err
-	}
-
-	// 根据对应品质概率的权重抽取菜品
+	var selectedDishes []*dao.Dish
 	for i := 0; i < num; i++ {
+		// 根据对应品质概率的权重抽取菜品
 		randomNum := rand.Float64()
 		var selectedDish *dao.Dish
 
 		switch {
 		case randomNum < global.ProbabilityR:
-			selectedDish = dishesWithR[rand.Intn(len(dishesWithR))]
+			selectedDish = dishesMap["R"][rand.Intn(len(dishesMap["R"]))]
 		case randomNum < global.ProbabilityR+global.ProbabilitySR:
-			selectedDish = dishesWithSR[rand.Intn(len(dishesWithSR))]
+			selectedDish = dishesMap["SR"][rand.Intn(len(dishesMap["SR"]))]
 		case randomNum < global.ProbabilityR+global.ProbabilitySR+global.ProbabilitySSR:
-			selectedDish = dishesWithSSR[rand.Intn(len(dishesWithSSR))]
+			selectedDish = dishesMap["SSR"][rand.Intn(len(dishesMap["SSR"]))]
 		}
 
 		selectedDishes = append(selectedDishes, selectedDish)
@@ -138,6 +129,7 @@ func (s *ShotSrv) TenShots(ctx *gin.Context) (resp *vo.Response, err error) {
 	}
 
 	// 随机生成十个菜品（可重复）
+	userDishDao := dao.NewUserDishDao(ctx)
 	dishes, err := generateRandomDish(ctx, 10)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorDatabase), err
@@ -148,7 +140,6 @@ func (s *ShotSrv) TenShots(ctx *gin.Context) (resp *vo.Response, err error) {
 		dish := dishes[i]
 
 		// 判断用户是否已经拥有该菜品
-		userDishDao := dao.NewUserDishDao(ctx)
 		userDish, err := userDishDao.FindUserDish(userInfo.Id, dish.ID)
 		// 如果用户没有拥有过该菜品，则创建一条记录，数量置1，碎片置0
 		if errors.Is(err, gorm.ErrRecordNotFound) {
