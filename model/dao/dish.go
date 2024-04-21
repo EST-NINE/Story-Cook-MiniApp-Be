@@ -11,6 +11,7 @@ type Dish struct {
 	Name        string `gorm:"not null"`
 	Description string `gorm:"not null"`
 	Image       string `gorm:"not null"`
+	Quality     string `gorm:"not null"`
 }
 
 type DishDao struct {
@@ -43,4 +44,8 @@ func (dao *DishDao) UpdateDish(id uint, dish *Dish) error {
 
 func (dao *DishDao) ListDish() (dishes []*Dish, total int64, err error) {
 	return dishes, total, dao.DB.Model(&Dish{}).Count(&total).Find(&dishes).Error
+}
+
+func (dao *DishDao) ListDishByQuality(quality string) (dishes []*Dish, total int64, err error) {
+	return dishes, total, dao.DB.Model(&Dish{}).Where("quality = ?", quality).Count(&total).Find(&dishes).Error
 }

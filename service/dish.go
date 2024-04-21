@@ -16,6 +16,7 @@ func (s *DishSrv) CreateDish(ctx *gin.Context, req *dto.DishDto) (resp *vo.Respo
 		Name:        req.Name,
 		Description: req.Description,
 		Image:       req.Image,
+		Quality:     req.Quality,
 	}
 
 	err = dao.NewDishDao(ctx).CreateDish(dish)
@@ -51,6 +52,7 @@ func (s *DishSrv) UpdateDish(ctx *gin.Context, req *dto.DishDto) (resp *vo.Respo
 		Name:        req.Name,
 		Description: req.Description,
 		Image:       req.Image,
+		Quality:     req.Quality,
 	}
 
 	err = dishDao.UpdateDish(req.ID, dish)

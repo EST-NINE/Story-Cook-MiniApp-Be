@@ -7,6 +7,7 @@ type DishResp struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Image       string `json:"image"`
+	Quality     string `json:"quality"`
 	CreateAt    string `json:"create_at"`
 }
 
@@ -16,6 +17,7 @@ func BuildDishResp(dish *dao.Dish) *DishResp {
 		Name:        dish.Name,
 		Description: dish.Description,
 		Image:       dish.Image,
+		Quality:     dish.Quality,
 		CreateAt:    dish.CreatedAt.Format("2006-01-02 15:04:05"),
 	}
 }

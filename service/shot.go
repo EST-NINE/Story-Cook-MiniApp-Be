@@ -17,6 +17,47 @@ import (
 type ShotSrv struct {
 }
 
+// 随机生成指定数量的菜品
+func generateRandomDish(ctx *gin.Context, num int) ([]*dao.Dish, error) {
+	dishDao := dao.NewDishDao(ctx)
+	var selectedDishes []*dao.Dish
+
+	// 查询对应品质的菜品
+	dishesWithR, totalWithR, err := dishDao.ListDishByQuality("R")
+	if err != nil {
+		return nil, err
+	}
+
+	dishesWithSR, totalWithSR, err := dishDao.ListDishByQuality("SR")
+	if err != nil {
+		return nil, err
+	}
+
+	dishesWithSSR, totalWithSSR, err := dishDao.ListDishByQuality("SSR")
+	if err != nil {
+		return nil, err
+	}
+
+	// 根据对应品质概率的权重抽取菜品
+	for i := 0; i < num; i++ {
+		randomNum := rand.Float64()
+		var selectedDish *dao.Dish
+
+		switch {
+		case randomNum < global.ProbabilityR:
+			selectedDish = dishesWithR[rand.Intn(int(totalWithR))]
+		case randomNum < global.ProbabilityR+global.ProbabilitySR:
+			selectedDish = dishesWithSR[rand.Intn(int(totalWithSR))]
+		case randomNum < global.ProbabilityR+global.ProbabilitySR+global.ProbabilitySSR:
+			selectedDish = dishesWithSSR[rand.Intn(int(totalWithSSR))]
+		}
+
+		selectedDishes = append(selectedDishes, selectedDish)
+	}
+
+	return selectedDishes, nil
+}
+
 func (s *ShotSrv) SingleShot(ctx *gin.Context) (resp *vo.Response, err error) {
 	claims, _ := ctx.Get("claims")
 	userInfo := claims.(*util.Claims)
@@ -40,12 +81,11 @@ func (s *ShotSrv) SingleShot(ctx *gin.Context) (resp *vo.Response, err error) {
 	}
 
 	// 随机生成一个菜品
-	dishes, total, err := dao.NewDishDao(ctx).ListDish()
+	dishes, err := generateRandomDish(ctx, 1)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
-	random := rand.Intn(int(total))
-	dish := dishes[random]
+	dish := dishes[0]
 
 	// 判断用户是否已经拥有该菜品
 	userDishDao := dao.NewUserDishDao(ctx)
