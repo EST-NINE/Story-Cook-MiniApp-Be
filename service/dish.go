@@ -6,6 +6,7 @@ import (
 	"github.com/ncuhome/story-cook/model/dto"
 	"github.com/ncuhome/story-cook/model/vo"
 	"github.com/ncuhome/story-cook/pkg/myErrors"
+	"github.com/ncuhome/story-cook/pkg/util"
 )
 
 type DishSrv struct {
@@ -74,4 +75,12 @@ func (s *DishSrv) ListDish(ctx *gin.Context) (resp *vo.Response, err error) {
 		listDishResp = append(listDishResp, vo.BuildDishResp(dish))
 	}
 	return vo.List(listDishResp, total), nil
+}
+
+func (s *DishSrv) ListUserDish(ctx *gin.Context) (resp *vo.Response, err error) {
+	claims, _ := ctx.Get("claims")
+	userInfo := claims.(*util.Claims)
+
+	userDishList, total, err := dao.NewUserDishDao(ctx).ListUserDish(userInfo.Id)
+	return vo.List(userDishList, total), nil
 }

@@ -13,6 +13,16 @@ type UserDish struct {
 	PieceAmount uint `gorm:"piece_amount" json:"piece_amount"`
 }
 
+type UserDishResp struct {
+	ID          uint   `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Image       string `json:"image"`
+	Quality     string `json:"quality"`
+	DishAmount  uint   `json:"dish_amount"`
+	PieceAmount uint   `json:"piece_amount"`
+}
+
 type UserDishDao struct {
 	*gorm.DB
 }
@@ -35,4 +45,14 @@ func (dao *UserDishDao) FindUserDish(userId, dishId uint) (userDish *UserDish, e
 
 func (dao *UserDishDao) UpdateUserDish(userDish *UserDish) error {
 	return dao.DB.Model(&UserDish{}).Where("user_id = ? AND dish_id = ?", userDish.UserId, userDish.DishId).Save(&userDish).Error
+}
+
+func (dao *UserDishDao) ListUserDish(userId uint) (userDishList []*UserDishResp, total int64, err error) {
+	err = dao.DB.Table("dish").
+		Select("dish.id, dish.name, dish.description, dish.image, dish.quality, ud.dish_amount, ud.piece_amount").
+		Joins("left join user_dish ud on ud.dish_id = dish.id").
+		Where("ud.user_id = ?", userId).
+		Scan(&userDishList).
+		Count(&total).Error
+	return userDishList, total, err
 }

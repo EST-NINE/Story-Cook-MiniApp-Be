@@ -96,3 +96,14 @@ func ListDishHandler(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, resp)
 }
+
+func ListUserDishHandler(ctx *gin.Context) {
+	dishSrv := service.DishSrv{}
+	resp, err := dishSrv.ListUserDish(ctx)
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+}
