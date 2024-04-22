@@ -48,6 +48,6 @@ func (u *UserGroup) RegisterRoutes(group *gin.RouterGroup) {
 		// 抽卡
 		user.GET("shot/single", controller.ShotSingleHandler)
 		user.GET("shot/ten", controller.TenShotsHandler)
-		user.GET("shot/merge/:dishID", controller.MergePieceHandler)
+		user.POST("shot/merge", controller.MergePieceHandler)
 	}
 }

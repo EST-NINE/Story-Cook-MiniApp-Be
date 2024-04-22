@@ -5,17 +5,20 @@ const (
 	TenShotCost    = 200
 
 	InitialUnlockDishAmount = -1
-	InitialLockDishAmount   = 1
-	InitialIsUnLock         = true
+)
 
-	PieceAmountR   = 20
-	PieceAmountSR  = 30
-	PieceAmountSSR = 50
+var (
+	// PieceAmountMap 表示每种品质物品的对应兑换碎片的所需的数量
+	PieceAmountMap = map[string]int{
+		"R":   20,
+		"SR":  30,
+		"SSR": 50,
+	}
 
-	AddedPieceAmount = 20
-	MergePieceAmount = 100
-
-	ProbabilityR   = 0.75
-	ProbabilitySR  = 0.2
-	ProbabilitySSR = 0.05
+	// ProbabilityMap 表示每种品质物品的对应抽取概率
+	ProbabilityMap = map[string]float64{
+		"R":   0.75,
+		"SR":  0.2,
+		"SSR": 0.05,
+	}
 )
