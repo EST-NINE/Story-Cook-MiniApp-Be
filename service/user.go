@@ -105,6 +105,13 @@ func (s *UserSrv) UpdateInfo(ctx *gin.Context, req *dto.UserDto) (resp *vo.Respo
 		user.Money += req.Money
 	}
 
+	if user.Piece+req.Piece < 0 {
+		err = errors.New("piece not enough")
+		return vo.Error(err, myErrors.ErrorNotEnoughMoney), err
+	} else {
+		user.Piece += req.Piece
+	}
+
 	err = userDao.UpdateUserById(userInfo.Id, user)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorDatabase), err

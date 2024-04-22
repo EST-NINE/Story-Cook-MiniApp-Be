@@ -4,8 +4,13 @@ const (
 	SingleShotCost = 20
 	TenShotCost    = 200
 
-	InitialDishAmount  = 1
-	InitialPieceAmount = 0
+	InitialUnlockDishAmount = -1
+	InitialLockDishAmount   = 1
+	InitialIsUnLock         = true
+
+	PieceAmountR   = 20
+	PieceAmountSR  = 30
+	PieceAmountSSR = 50
 
 	AddedPieceAmount = 20
 	MergePieceAmount = 100

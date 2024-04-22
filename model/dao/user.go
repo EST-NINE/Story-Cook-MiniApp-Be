@@ -11,6 +11,7 @@ type User struct {
 	UserName string
 	Openid   string `gorm:"primaryKey"`
 	Money    int    `gorm:"default:0"`
+	Piece    int    `gorm:"default:0"`
 }
 
 type UserDao struct {
@@ -42,6 +43,7 @@ func (dao *UserDao) UpdateUserById(id uint, user *User) error {
 	updateFields := map[string]interface{}{
 		"user_name": user.UserName,
 		"money":     user.Money,
+		"piece":     user.Piece,
 	}
 
 	return dao.DB.Model(&User{}).Where("id = ?", id).Updates(updateFields).Error
