@@ -7,10 +7,10 @@ import (
 )
 
 type UserDish struct {
-	UserId      uint `gorm:"user_id" json:"user_id"`
-	DishId      uint `gorm:"dish_id" json:"dish_id"`
-	DishAmount  uint `gorm:"dish_amount" json:"dish_amount"`
-	PieceAmount uint `gorm:"piece_amount" json:"piece_amount"`
+	UserId     uint `gorm:"user_id" json:"user_id"`
+	DishId     uint `gorm:"dish_id" json:"dish_id"`
+	DishAmount int  `gorm:"dish_amount" json:"dish_amount"`
+	IsUnlock   bool `gorm:"is_unlock" json:"is_unlock"`
 }
 
 type UserDishResp struct {
@@ -19,8 +19,8 @@ type UserDishResp struct {
 	Description string `json:"description"`
 	Image       string `json:"image"`
 	Quality     string `json:"quality"`
-	DishAmount  uint   `json:"dish_amount"`
-	PieceAmount uint   `json:"piece_amount"`
+	DishAmount  int    `json:"dish_amount"`
+	IsUnlock    bool   `gorm:"is_unlock" json:"is_unlock"`
 }
 
 type UserDishDao struct {
@@ -49,9 +49,10 @@ func (dao *UserDishDao) UpdateUserDish(userDish *UserDish) error {
 
 func (dao *UserDishDao) ListUserDish(userId uint) (userDishList []*UserDishResp, err error) {
 	err = dao.DB.Table("dish").
-		Select("dish.id, dish.name, dish.description, dish.image, dish.quality, ud.dish_amount, ud.piece_amount").
+		Select("dish.id, dish.name, dish.description, dish.image, dish.quality, ud.dish_amount, ud.is_unlock").
 		Joins("left join user_dish ud on ud.dish_id = dish.id").
 		Where("ud.user_id = ?", userId).
+		Order("ud.is_unlock desc, ud.dish_amount desc").
 		Scan(&userDishList).Error
 	return userDishList, err
 }

@@ -2,8 +2,8 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 
+	"github.com/ncuhome/story-cook/model/dto"
 	"github.com/ncuhome/story-cook/model/vo"
 	"github.com/ncuhome/story-cook/pkg/myErrors"
 
@@ -35,16 +35,15 @@ func TenShotsHandler(ctx *gin.Context) {
 }
 
 func MergePieceHandler(ctx *gin.Context) {
-	idStr := ctx.Param("dishID")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
+	var req dto.PieceDto
+	if err := ctx.ShouldBind(&req); err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
 		return
 	}
 
 	shotSrv := service.ShotSrv{}
-	resp, err := shotSrv.MergePiece(ctx, uint(id))
+	resp, err := shotSrv.MergePiece(ctx, &req)
 	if err != nil {
 		util.LogrusObj.Infoln(err)
 		ctx.JSON(http.StatusInternalServerError, resp)
