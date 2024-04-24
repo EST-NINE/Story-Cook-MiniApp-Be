@@ -50,8 +50,7 @@ func (dao *UserDishDao) UpdateUserDish(userDish *UserDish) error {
 func (dao *UserDishDao) ListUserDish(userId uint) (userDishList []*UserDishResp, err error) {
 	err = dao.DB.Table("dish").
 		Select("dish.id, dish.name, dish.description, dish.image, dish.quality, ud.dish_amount, ud.is_unlock").
-		Joins("left join user_dish ud on ud.dish_id = dish.id").
-		Where("ud.user_id = ?", userId).
+		Joins("LEFT JOIN user_dish ud ON ud.dish_id = dish.id AND ud.user_id = ?", userId).
 		Where("dish.deleted_at IS NULL").
 		Order("ud.is_unlock desc, ud.dish_amount desc").
 		Scan(&userDishList).Error
