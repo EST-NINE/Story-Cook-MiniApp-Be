@@ -61,6 +61,16 @@ func (s *StorySrv) ListStory(ctx *gin.Context, req *dto.ListDto) (resp *vo.Respo
 	return vo.List(listStoryResp, total), nil
 }
 
+// ListAllStory 得到全部的故事
+func (s *StorySrv) ListAllStory(ctx *gin.Context, req *dto.ListDto) (resp *vo.Response, err error) {
+	stories, total, err := dao.NewStoryDao(ctx).ListAllStory(req.Page, req.Limit)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+
+	return vo.List(stories, total), nil
+}
+
 // DeleteStory 删除故事
 func (s *StorySrv) DeleteStory(ctx *gin.Context, id uint) (resp *vo.Response, err error) {
 	err = dao.NewStoryDao(ctx).DeleteStory(id)

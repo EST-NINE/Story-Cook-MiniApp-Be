@@ -47,5 +47,11 @@ func (a *AdminGroup) RegisterRoutes(group *gin.RouterGroup) {
 		admin.GET("prompt", controller.GetPromptHandler)
 		admin.GET("prompt/list", controller.FindPromptListHandler)
 		admin.PUT("prompt", controller.UpdatePromptHandler)
+
+		// 故事
+		admin.GET("story/:id", controller.GetStoryHandler)
+		admin.DELETE("story/:id", controller.DeleteStoryHandler)
+		admin.PUT("story", controller.UpdateStoryHandler)
+		admin.POST("story/list", controller.ListAllStoryHandler)
 	}
 }
