@@ -31,7 +31,7 @@ func generateRandomDish(ctx *gin.Context, num int) ([]*dao.Dish, error) {
 	}
 
 	var selectedDishes []*dao.Dish
-	for i := 0; i < num; i++ {
+	for i := 0; i < num; {
 		// 根据对应品质概率的权重抽取菜品
 		randomNum := rand.Float64()
 		var selectedDish *dao.Dish
@@ -45,7 +45,10 @@ func generateRandomDish(ctx *gin.Context, num int) ([]*dao.Dish, error) {
 			selectedDish = dishesMap["SSR"][rand.Intn(len(dishesMap["SSR"]))]
 		}
 
-		selectedDishes = append(selectedDishes, selectedDish)
+		if selectedDish != nil {
+			selectedDishes = append(selectedDishes, selectedDish)
+			i++
+		}
 	}
 
 	return selectedDishes, nil
