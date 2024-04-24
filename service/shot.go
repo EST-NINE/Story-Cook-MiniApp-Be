@@ -38,11 +38,17 @@ func generateRandomDish(ctx *gin.Context, num int) ([]*dao.Dish, error) {
 
 		switch {
 		case randomNum < global.ProbabilityMap["R"]:
-			selectedDish = dishesMap["R"][rand.Intn(len(dishesMap["R"]))]
+			if len(dishesMap["R"]) > 0 {
+				selectedDish = dishesMap["R"][rand.Intn(len(dishesMap["R"]))]
+			}
 		case randomNum < global.ProbabilityMap["R"]+global.ProbabilityMap["SR"]:
-			selectedDish = dishesMap["SR"][rand.Intn(len(dishesMap["SR"]))]
+			if len(dishesMap["SR"]) > 0 {
+				selectedDish = dishesMap["SR"][rand.Intn(len(dishesMap["SR"]))]
+			}
 		default:
-			selectedDish = dishesMap["SSR"][rand.Intn(len(dishesMap["SSR"]))]
+			if len(dishesMap["SSR"]) > 0 {
+				selectedDish = dishesMap["SSR"][rand.Intn(len(dishesMap["SSR"]))]
+			}
 		}
 
 		if selectedDish != nil {
