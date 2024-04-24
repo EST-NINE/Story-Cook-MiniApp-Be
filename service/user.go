@@ -165,6 +165,11 @@ func (s *UserSrv) ListUser(ctx *gin.Context, req *dto.ListUserDto) (resp *vo.Res
 		if err != nil {
 			return vo.Error(err, myErrors.ErrorDatabase), err
 		}
+	case 2:
+		users, total, err = userDao.ListUserByPiece(req.Page, req.Limit)
+		if err != nil {
+			return vo.Error(err, myErrors.ErrorDatabase), err
+		}
 	}
 
 	listUserResp := make([]*vo.UserResp, 0)
