@@ -43,6 +43,11 @@ func (s *DishSrv) DeleteDish(ctx *gin.Context, id uint) (resp *vo.Response, err 
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
+	err = dao.NewUserDishDao(ctx).DeleteUserDishByDishId(id)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+
 	return vo.Success(), nil
 }
 
