@@ -41,6 +41,7 @@ func (a *AdminGroup) RegisterRoutes(group *gin.RouterGroup) {
 		// 用户
 		admin.POST("user/list", controller.ListUserHandler)
 		admin.DELETE("user/:id", controller.DeleteUserHandler)
+		admin.PUT("user", controller.UpdateUserHandler)
 
 		// Prompt
 		admin.GET("prompt", controller.GetPromptHandler)
