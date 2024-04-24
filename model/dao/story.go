@@ -8,13 +8,13 @@ import (
 )
 
 type Story struct {
-	ID        uint `gorm:"primarykey"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	UserId    uint   `gorm:"not null"`
-	Title     string `gorm:"not null"`
-	Content   string `gorm:"type:longtext"`
-	Count     uint   `gorm:"default:0"`
+	ID        uint      `gorm:"primarykey" json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	UserId    uint      `gorm:"not null" json:"user_id"`
+	Title     string    `gorm:"not null" json:"title"`
+	Content   string    `gorm:"type:longtext" json:"content"`
+	Count     uint      `gorm:"default:0" json:"count"`
 }
 
 type StoryDao struct {
@@ -36,6 +36,16 @@ func (dao *StoryDao) CreateStory(story *Story) error {
 // ListStory 得到故事列表
 func (dao *StoryDao) ListStory(page, limit int, userId uint) (stories []*Story, total int64, err error) {
 	err = dao.DB.Model(&Story{}).Where("user_id = ?", userId).
+		Count(&total).
+		Order("created_at DESC").
+		Limit(limit).Offset((page - 1) * limit).
+		Find(&stories).Error
+	return stories, total, err
+}
+
+// ListAllStory 得到全部故事列表
+func (dao *StoryDao) ListAllStory(page, limit int) (stories []*Story, total int64, err error) {
+	err = dao.DB.Model(&Story{}).
 		Count(&total).
 		Order("created_at DESC").
 		Limit(limit).Offset((page - 1) * limit).

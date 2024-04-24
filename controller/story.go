@@ -143,6 +143,24 @@ func ListStoryHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
+func ListAllStoryHandler(ctx *gin.Context) {
+	var req dto.ListDto
+	if err := ctx.ShouldBind(&req); err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
+		return
+	}
+
+	storySrv := service.StorySrv{}
+	resp, err := storySrv.ListAllStory(ctx, &req)
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+}
+
 func DeleteStoryHandler(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, err := strconv.Atoi(idStr)

@@ -8,6 +8,7 @@ type UserResp struct {
 	ID       uint   `json:"id"`        // 用户ID
 	UserName string `json:"user_name"` // 用户名
 	Money    int    `json:"money"`     // 货币
+	Piece    int    `json:"piece"`     // 碎片
 	CreateAt string `json:"create_at"` // 创建
 }
 
@@ -21,6 +22,7 @@ func BuildUserResp(user *dao.User) *UserResp {
 		ID:       user.ID,
 		UserName: user.UserName,
 		Money:    user.Money,
+		Piece:    user.Piece,
 		CreateAt: user.CreatedAt.Format("2006-01-02 15:04:05"),
 	}
 }

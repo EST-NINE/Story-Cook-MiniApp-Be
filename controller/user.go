@@ -60,6 +60,25 @@ func UpdateUserInfoHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
+// UpdateUserHandler 管理端更改用户信息
+func UpdateUserHandler(ctx *gin.Context) {
+	var req dto.UserDto
+	if err := ctx.ShouldBind(&req); err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusBadRequest, vo.Error(err))
+		return
+	}
+
+	userSrv := service.UserSrv{}
+	resp, err := userSrv.UpdateUser(ctx, &req)
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+}
+
 func ListUserHandler(ctx *gin.Context) {
 	var req dto.ListUserDto
 	if err := ctx.ShouldBind(&req); err != nil {
