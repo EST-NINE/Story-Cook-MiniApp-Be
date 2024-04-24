@@ -123,21 +123,10 @@ func (s *UserSrv) UpdateInfo(ctx *gin.Context, req *dto.UserDto) (resp *vo.Respo
 
 func (s *UserSrv) UpdateUser(ctx *gin.Context, req *dto.UserDto) (resp *vo.Response, err error) {
 	userDao := dao.NewUserDao(ctx)
-	user, err := userDao.FindUserByUserId(req.UserID)
-	if err != nil {
-		return vo.Error(err, myErrors.ErrorDatabase), err
-	}
-
-	if req.UserName != "" {
-		user.UserName = req.UserName
-	}
-
-	if req.Money != 0 {
-		user.Money = req.Money
-	}
-
-	if req.Piece != 0 {
-		user.Piece = req.Piece
+	user := &dao.User{
+		UserName: req.UserName,
+		Money:    req.Money,
+		Piece:    req.Piece,
 	}
 
 	err = userDao.UpdateUserById(req.UserID, user)
@@ -145,8 +134,7 @@ func (s *UserSrv) UpdateUser(ctx *gin.Context, req *dto.UserDto) (resp *vo.Respo
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
-	userResp := vo.BuildUserResp(user)
-	return vo.SuccessWithData(userResp), nil
+	return vo.Success(), nil
 }
 
 func (s *UserSrv) ListUser(ctx *gin.Context, req *dto.ListUserDto) (resp *vo.Response, err error) {

@@ -40,13 +40,7 @@ func (dao *UserDao) FindUserByOpenid(openid string) (user *User, err error) {
 }
 
 func (dao *UserDao) UpdateUserById(id uint, user *User) error {
-	updateFields := map[string]interface{}{
-		"user_name": user.UserName,
-		"money":     user.Money,
-		"piece":     user.Piece,
-	}
-
-	return dao.DB.Model(&User{}).Where("id = ?", id).Updates(updateFields).Error
+	return dao.DB.Model(&User{}).Where("id = ?", id).Updates(user).Error
 }
 
 func (dao *UserDao) DailyLoginReward(user *User) error {
