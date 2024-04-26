@@ -43,3 +43,26 @@ func AliOss(fileName string, file *multipart.FileHeader) (string, error) {
 	fmt.Println("文件上传到：", imagePath)
 	return imagePath, nil
 }
+
+func DeleteFile(fileName string) error {
+	// 创建OSSClient实例
+	client, err := oss.New(config.AliEndPoint, config.AliAccessKeyId, config.AliAccessKeySecret)
+	if err != nil {
+		return err
+	}
+
+	// 获取存储空间
+	bucket, err := client.Bucket(config.AliBucketName)
+	if err != nil {
+		return err
+	}
+
+	// 删除文件
+	err = bucket.DeleteObject(fileName)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("文件删除成功：", fileName)
+	return nil
+}

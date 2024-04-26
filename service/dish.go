@@ -38,12 +38,27 @@ func (s *DishSrv) FindDishById(ctx *gin.Context, id uint) (resp *vo.Response, er
 }
 
 func (s *DishSrv) DeleteDish(ctx *gin.Context, id uint) (resp *vo.Response, err error) {
-	err = dao.NewDishDao(ctx).DeleteDish(id)
+	dishDao := dao.NewDishDao(ctx)
+
+	// 删除关联的用户的食材表中的数据
+	err = dao.NewUserDishDao(ctx).DeleteUserDishByDishId(id)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
-	err = dao.NewUserDishDao(ctx).DeleteUserDishByDishId(id)
+	// 删除对应的菜品存储在 oss 的图片
+	dish, err := dishDao.FindDishById(id)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+
+	err = util.DeleteFile(dish.Image)
+	if err != nil {
+		return vo.Error(err), err
+	}
+
+	// 删除对应的食材
+	err = dishDao.DeleteDish(id)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
