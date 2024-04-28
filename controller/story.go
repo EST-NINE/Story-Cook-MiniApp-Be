@@ -51,8 +51,7 @@ func ExtendStoryHandler(ctx *gin.Context) {
 		return
 	}
 
-	prompt := fmt.Sprintf("标题：%s 故事背景：%s 关键词：%s", story.Title, story.Content, req.Keywords)
-	if err := ForWardSSE(ctx, prompt, charaSetting); err != nil {
+	if err := ForWardSSE(ctx, GeneratePrompt(story.Title, story.Content, req.Keywords), charaSetting); err != nil {
 		util.LogrusObj.Infoln(err)
 		return
 	}
@@ -74,8 +73,7 @@ func EndStoryHandler(ctx *gin.Context) {
 	}
 
 	charaSetting := global.EndStoryPrompt
-	prompt := fmt.Sprintf("标题：%s 故事背景：%s 关键词：%s", story.Title, story.Content, req.Keywords)
-	if err := ForWardSSE(ctx, prompt, charaSetting); err != nil {
+	if err := ForWardSSE(ctx, GeneratePrompt(story.Title, story.Content, req.Keywords), charaSetting); err != nil {
 		util.LogrusObj.Infoln(err)
 		return
 	}

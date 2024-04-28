@@ -7,6 +7,6 @@ type StoryDto struct {
 }
 
 type ExtendStoryDto struct {
-	StoryId  uint   `json:"storyId" example:"1"`
-	Keywords string `json:"keywords" example:"贾宝玉 薛宝钗"`
+	StoryId  uint     `json:"storyId" example:"1"`
+	Keywords []string `json:"keywords" example:"[\"贾宝玉\", \"薛宝钗\"]"`
 }
