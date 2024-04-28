@@ -1,4 +1,4 @@
-package tongyi
+package global
 
 var (
 	ExtendStoryPrompt string

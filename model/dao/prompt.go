@@ -3,9 +3,9 @@ package dao
 import (
 	"context"
 	"errors"
+	"github.com/ncuhome/story-cook/pkg/global"
 
 	"github.com/ncuhome/story-cook/model/dto"
-	"github.com/ncuhome/story-cook/pkg/tongyi"
 	"github.com/ncuhome/story-cook/pkg/util"
 	"gorm.io/gorm"
 )
@@ -89,7 +89,7 @@ func (dao *PromptDao) UpdatePrompt(req *dto.PromptDto) error {
 		if err != nil {
 			return err
 		}
-		tongyi.ExtendStoryPrompt = req.ExtendStory
+		global.ExtendStoryPrompt = req.ExtendStory
 	}
 
 	if req.EndStory != "" {
@@ -102,7 +102,7 @@ func (dao *PromptDao) UpdatePrompt(req *dto.PromptDto) error {
 		if err != nil {
 			return err
 		}
-		tongyi.EndStoryPrompt = req.EndStory
+		global.EndStoryPrompt = req.EndStory
 	}
 
 	if req.AssessStory != "" {
@@ -115,7 +115,7 @@ func (dao *PromptDao) UpdatePrompt(req *dto.PromptDto) error {
 		if err != nil {
 			return err
 		}
-		tongyi.AssessStoryPrompt = req.AssessStory
+		global.AssessStoryPrompt = req.AssessStory
 	}
 	return nil
 }
@@ -142,7 +142,7 @@ func InitPrompt() {
 		return
 	}
 
-	tongyi.ExtendStoryPrompt = data.ExtendStory
-	tongyi.EndStoryPrompt = data.EndStory
-	tongyi.AssessStoryPrompt = data.AssessStory
+	global.ExtendStoryPrompt = data.ExtendStory
+	global.EndStoryPrompt = data.EndStory
+	global.AssessStoryPrompt = data.AssessStory
 }

@@ -2,12 +2,11 @@ package controller
 
 import (
 	"fmt"
+	"github.com/ncuhome/story-cook/pkg/global"
 	"net/http"
 	"strconv"
 
 	"github.com/ncuhome/story-cook/model/dao"
-
-	"github.com/ncuhome/story-cook/pkg/tongyi"
 
 	"github.com/gin-gonic/gin"
 
@@ -44,7 +43,7 @@ func ExtendStoryHandler(ctx *gin.Context) {
 		return
 	}
 
-	charaSetting := tongyi.ExtendStoryPrompt
+	charaSetting := global.ExtendStoryPrompt
 	story, err := dao.NewStoryDao(ctx).FindStoryById(req.StoryId)
 	if err != nil {
 		util.LogrusObj.Infoln(err)
@@ -74,7 +73,7 @@ func EndStoryHandler(ctx *gin.Context) {
 		return
 	}
 
-	charaSetting := tongyi.EndStoryPrompt
+	charaSetting := global.EndStoryPrompt
 	prompt := fmt.Sprintf("标题：%s 故事背景：%s 关键词：%s", story.Title, story.Content, req.Keywords)
 	if err := ForWardSSE(ctx, prompt, charaSetting); err != nil {
 		util.LogrusObj.Infoln(err)
@@ -98,7 +97,7 @@ func AssessStoryHandler(ctx *gin.Context) {
 		return
 	}
 
-	charaSetting := tongyi.AssessStoryPrompt
+	charaSetting := global.AssessStoryPrompt
 	prompt := fmt.Sprintf("故事标题：%s 故事内容：%s", story.Title, story.Content)
 	if err := ForWardSSE(ctx, prompt, charaSetting); err != nil {
 		util.LogrusObj.Infoln(err)

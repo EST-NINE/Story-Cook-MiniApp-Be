@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/ncuhome/story-cook/model/dao"
 	"net/http"
 	"strconv"
 
@@ -28,6 +29,7 @@ func CreateDishHandler(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, resp)
+	dao.InitDishMap()
 }
 
 func GetDishHandler(ctx *gin.Context) {
@@ -66,6 +68,7 @@ func DeleteDishHandler(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, resp)
+	dao.InitDishMap()
 }
 
 func UpdateDishHandler(ctx *gin.Context) {
@@ -84,6 +87,7 @@ func UpdateDishHandler(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, resp)
+	dao.InitDishMap()
 }
 
 func ListDishHandler(ctx *gin.Context) {
