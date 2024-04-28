@@ -94,11 +94,17 @@ func ForWardSSE(ctx *gin.Context, charaSetting string, prompt string) error {
 	return nil
 }
 
-func GeneratePrompt(title string, content string, keywords []string) string {
+func GeneratePrompt(title string, content string, keywords []string) (string, error) {
 	keywordsWithDsc := ""
 	for _, value := range keywords {
-		keywordsWithDsc = fmt.Sprintf("%s%s（%s） ", keywordsWithDsc, value, global.DishMap[value])
+		dsc, ok := global.DishMap[value]
+		if !ok {
+			err := fmt.Errorf("error: keywords not exist")
+			util.LogrusObj.Infoln(err)
+			return "", err
+		}
+		keywordsWithDsc = fmt.Sprintf("%s%s（%s） ", keywordsWithDsc, value, dsc)
 	}
 
-	return fmt.Sprintf("故事标题：%s 故事背景：%s 关键词：%s", title, content, keywordsWithDsc)
+	return fmt.Sprintf("故事标题：%s 故事背景：%s 关键词：%s", title, content, keywordsWithDsc), nil
 }

@@ -22,4 +22,5 @@ func init() {
 	util.InitLog()
 	dao.InitMysql()
 	dao.InitPrompt()
+	dao.InitDishMap()
 }

@@ -51,7 +51,14 @@ func ExtendStoryHandler(ctx *gin.Context) {
 		return
 	}
 
-	if err := ForWardSSE(ctx, GeneratePrompt(story.Title, story.Content, req.Keywords), charaSetting); err != nil {
+	prompt, err := GeneratePrompt(story.Title, story.Content, req.Keywords)
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
+		return
+	}
+
+	if err := ForWardSSE(ctx, prompt, charaSetting); err != nil {
 		util.LogrusObj.Infoln(err)
 		return
 	}
@@ -73,7 +80,15 @@ func EndStoryHandler(ctx *gin.Context) {
 	}
 
 	charaSetting := global.EndStoryPrompt
-	if err := ForWardSSE(ctx, GeneratePrompt(story.Title, story.Content, req.Keywords), charaSetting); err != nil {
+
+	prompt, err := GeneratePrompt(story.Title, story.Content, req.Keywords)
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
+		return
+	}
+
+	if err := ForWardSSE(ctx, prompt, charaSetting); err != nil {
 		util.LogrusObj.Infoln(err)
 		return
 	}
