@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/ncuhome/story-cook/config"
+	"github.com/ncuhome/story-cook/pkg/global"
 	"github.com/ncuhome/story-cook/pkg/util"
 	"io"
 	"net/http"
@@ -91,4 +92,13 @@ func ForWardSSE(ctx *gin.Context, charaSetting string, prompt string) error {
 		}
 	}
 	return nil
+}
+
+func GeneratePrompt(title string, content string, keywords []string) string {
+	keywordsWithDsc := ""
+	for _, value := range keywords {
+		keywordsWithDsc = fmt.Sprintf("%s%s（%s） ", keywordsWithDsc, value, global.DishMap[value])
+	}
+
+	return fmt.Sprintf("故事标题：%s 故事背景：%s 关键词：%s", title, content, keywordsWithDsc)
 }

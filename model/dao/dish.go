@@ -2,6 +2,8 @@ package dao
 
 import (
 	"context"
+	"github.com/ncuhome/story-cook/pkg/global"
+	"github.com/ncuhome/story-cook/pkg/util"
 
 	"gorm.io/gorm"
 )
@@ -64,4 +66,18 @@ func (dao *DishDao) ListDishesByQualities(qualities []string) (map[string][]*Dis
 	}
 
 	return dishesMap, nil
+}
+
+func InitDishMap() {
+	global.DishMap = make(map[string]string)
+	dishes, total, err := NewDishDao(context.TODO()).ListDish()
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		return
+	}
+
+	var i int64
+	for i = 0; i < total; i++ {
+		global.DishMap[dishes[i].Name] = dishes[i].Description
+	}
 }
