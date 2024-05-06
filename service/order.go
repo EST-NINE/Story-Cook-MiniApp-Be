@@ -139,7 +139,7 @@ func (s *OrderSrv) SettleOrder(ctx *gin.Context, req *dto.OrderDto) (resp *vo.Re
 	userInfo := claims.(*util.Claims)
 
 	// 生成货币的算法
-	money := global.BasicOrderReward + req.Score/20
+	money := global.CalculateMoney(req.Score)
 
 	// 更新订单信息，并标记为已完成
 	order := &dao.Orders{
