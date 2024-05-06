@@ -154,10 +154,10 @@ func (s *OrderSrv) SettleOrder(ctx *gin.Context, req *dto.OrderDto) (resp *vo.Re
 	}
 
 	// 更新用户的货币
-	err = dao.NewUserDao(ctx).AddReward(userInfo.Id, req.Money)
+	err = dao.NewUserDao(ctx).AddReward(userInfo.Id, money)
 	if err != nil {
 		return vo.Error(err, myErrors.ErrorDatabase), err
 	}
 
-	return vo.SuccessWithData(money), nil
+	return vo.SuccessWithData(vo.BuildOrderResp(order)), nil
 }
