@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/ncuhome/story-cook/pkg/global"
+
 	"github.com/google/uuid"
 
 	"github.com/ncuhome/story-cook/pkg/myErrors"
@@ -55,7 +57,7 @@ func (s *UserSrv) Login(ctx *gin.Context, req *dto.UserDto) (resp *vo.Response, 
 
 	// 实现每日签到的奖励
 	if _, err = loginDao.FindDailyLoginById(user.ID); errors.Is(err, gorm.ErrRecordNotFound) {
-		if err = userDao.DailyLoginReward(user); err != nil {
+		if err = userDao.AddReward(user.ID, global.DailyLoginReward); err != nil {
 			return vo.Error(err, myErrors.ErrorDatabase), err
 		}
 

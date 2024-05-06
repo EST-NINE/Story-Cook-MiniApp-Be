@@ -41,6 +41,7 @@ func (u *UserGroup) RegisterRoutes(group *gin.RouterGroup) {
 		user.POST("order/save", controller.CreateOrderHandler)
 		user.DELETE("order/:id", controller.DeleteOrderHandler)
 		user.PUT("order", controller.UpdateOrderHandler)
+		user.POST("order/settle", controller.SettleOrderHandler)
 
 		// 食材
 		user.GET("dish", controller.ListUserDishHandler)

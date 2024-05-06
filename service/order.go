@@ -5,6 +5,7 @@ import (
 	"github.com/ncuhome/story-cook/model/dao"
 	"github.com/ncuhome/story-cook/model/dto"
 	"github.com/ncuhome/story-cook/model/vo"
+	"github.com/ncuhome/story-cook/pkg/global"
 	"github.com/ncuhome/story-cook/pkg/myErrors"
 	"github.com/ncuhome/story-cook/pkg/util"
 )
@@ -56,7 +57,7 @@ func (s *OrderSrv) CreateOrder(ctx *gin.Context, req *dto.OrderDto) (resp *vo.Re
 		UserId:  userInfo.Id,
 		TaskId:  req.TaskId,
 		StoryId: story.ID,
-		Status:  1, // 进行中
+		Status:  global.OrderStatusOngoing, // 进行中
 	}
 
 	err = orderDao.CreateOrder(&order)
@@ -131,4 +132,32 @@ func (s *OrderSrv) ListOrder(ctx *gin.Context, req *dto.ListDto) (resp *vo.Respo
 	}
 
 	return vo.List(listOrderResp, total), nil
+}
+
+func (s *OrderSrv) SettleOrder(ctx *gin.Context, req *dto.OrderDto) (resp *vo.Response, err error) {
+	claims, _ := ctx.Get("claims")
+	userInfo := claims.(*util.Claims)
+
+	// 生成货币的算法
+	money := global.BasicOrderReward + req.Score/20
+
+	// 更新订单信息，并标记为已完成
+	order := &dao.Orders{
+		Comment: req.Comment,
+		Score:   req.Score,
+		Money:   money,
+		Status:  global.OrderStatusFinished, // 已完成
+	}
+	err = dao.NewOrderDao(ctx).UpdateOrder(req.ID, order)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+
+	// 更新用户的货币
+	err = dao.NewUserDao(ctx).AddReward(userInfo.Id, req.Money)
+	if err != nil {
+		return vo.Error(err, myErrors.ErrorDatabase), err
+	}
+
+	return vo.SuccessWithData(money), nil
 }

@@ -103,3 +103,22 @@ func ListOrderHandler(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, resp)
 }
+
+// SettleOrderHandler 结算订单
+func SettleOrderHandler(ctx *gin.Context) {
+	var req dto.OrderDto
+	if err := ctx.ShouldBind(&req); err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusBadRequest, vo.Error(err, myErrors.ErrorInvalidParams))
+		return
+	}
+
+	orderSrv := service.OrderSrv{}
+	resp, err := orderSrv.SettleOrder(ctx, &req)
+	if err != nil {
+		util.LogrusObj.Infoln(err)
+		ctx.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+}
