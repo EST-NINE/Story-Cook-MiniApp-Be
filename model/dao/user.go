@@ -47,6 +47,10 @@ func (dao *UserDao) DailyLoginReward(user *User) error {
 	return dao.DB.Model(&User{}).Where("id = ?", user.ID).Update("money", gorm.Expr("money + ?", 20)).Error
 }
 
+func (dao *UserDao) AddReward(userId uint, money int) error {
+	return dao.DB.Model(&User{}).Where("id = ?", userId).Update("money", gorm.Expr("money + ?", money)).Error
+}
+
 func (dao *UserDao) ListUserByID(page int, limit int) (users []*User, total int64, err error) {
 	err = dao.DB.Model(&User{}).
 		Count(&total).
